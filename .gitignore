@@ -1,0 +1,488 @@
+# ============================================
+# PORTFOLIO PROJECT - SENSITIVE FILES
+# ============================================
+# Planning documents (contain sensitive information)
+broad_requirements.txt
+REQUIREMENTS.md
+ZERO-COST-CHECKLIST.md
+IMPLEMENTATION-PLAN.md
+/docs/planning/
+
+# Personal notes and credentials
+notes.txt
+TODO.txt
+credentials.txt
+passwords.txt
+secrets.txt
+
+# ============================================
+# .NET CORE / ASP.NET CORE
+# ============================================
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio 2022 cache/options
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+.nuget/
+
+# ============================================
+# AZURE FUNCTIONS
+# ============================================
+# Azure Functions local settings (CONTAINS SECRETS!)
+local.settings.json
+**/local.settings.json
+
+# Azure Functions build output
+__blobstorage__/
+__queuestorage__/
+__azurite_db*__.json
+
+# Python (if using Python functions)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ============================================
+# CONFIGURATION FILES WITH SECRETS
+# ============================================
+# App settings with connection strings
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.json
+!appsettings.json
+!appsettings.Production.json
+
+# Connection strings
+connectionstrings.json
+secrets.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# ============================================
+# DATABASE FILES
+# ============================================
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# SQL Server database files
+*.mdf
+*.ldf
+*.ndf
+
+# ============================================
+# AZURE PUBLISH PROFILES (CONTAINS SECRETS!)
+# ============================================
+*.PublishSettings
+*.pubxml
+*.pubxml.user
+**/PublishProfiles/
+
+# Azure credentials
+*.azureauth
+
+# ============================================
+# IDENTITY & AUTHENTICATION
+# ============================================
+# ASP.NET scaffolding
+ScaffoldingReadMe.txt
+
+# ============================================
+# RIDER IDE
+# ============================================
+.idea/
+*.sln.iml
+.idea_modules/
+
+# ============================================
+# VISUAL STUDIO CODE
+# ============================================
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# ============================================
+# RESHARPER
+# ============================================
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# ============================================
+# TESTING
+# ============================================
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Coverage results
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+*.trx
+*.log
+
+# ============================================
+# BLAZOR
+# ============================================
+# Blazor WASM publish output (don't commit, generated on deploy)
+**/wwwroot/service-worker-assets.js
+**/wwwroot/_framework/
+
+# ============================================
+# NODE.JS (if using npm for tooling)
+# ============================================
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# ============================================
+# MAC OS
+# ============================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ============================================
+# WINDOWS
+# ============================================
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# ============================================
+# CERTIFICATES & KEYS (CRITICAL!)
+# ============================================
+*.pfx
+*.p12
+*.key
+*.pem
+*.crt
+*.cer
+*.der
+
+# SSL/TLS certificates
+*.csr
+*.srl
+
+# SSH keys
+id_rsa
+id_dsa
+id_ed25519
+*.ppk
+
+# ============================================
+# BACKUP FILES
+# ============================================
+*.bak
+*.backup
+*.old
+*.orig
+*~
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
+*.tmp
+*.temp
+*.cache
+*.log
+
+# ============================================
+# DOCUMENTATION GENERATION
+# ============================================
+_site/
+.DocStates
+
+# ============================================
+# PACKAGE MANAGERS
+# ============================================
+# NuGet
+*.nuget.props
+*.nuget.targets
+
+# Paket dependency manager
+.paket/paket.exe
+paket-files/
+
+# ============================================
+# MISC
+# ============================================
+# Fakes - Fake assemblies used for testing
+FakesAssemblies/
+
+# GhostDoc plugin setting file
+*.GhostDoc.xml
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# MightyMoose
+*.mm.*
+AutoTest.Net/
+
+# Web workbench (sass)
+.sass-cache/
+
+# Installshield output folder
+[Ee]xpress/
+
+# DocProject is a documentation generator add-in
+DocProject/buildhelp/
+DocProject/Help/*.HxT
+DocProject/Help/*.HxC
+DocProject/Help/*.hhc
+DocProject/Help/*.hhk
+DocProject/Help/*.hhp
+DocProject/Help/Html2
+DocProject/Help/html
+
+# Click-Once directory
+publish/
+
+# Publish Web Output
+*.[Pp]ublish.xml
+*.azurePubxml
+
+# Microsoft Azure Web App publish settings
+*.azurePubxml
+
+# NuGet Packages
+*.nupkg
+# NuGet Symbol Packages
+*.snupkg
+
+# Windows Azure Build Output
+csx/
+*.build.csdef
+
+# Windows Store app package directories and files
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+_pkginfo.txt
+*.appx
+*.appxbundle
+*.appxupload
+
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Visual Studio Trace Files
+*.e2e
+
+# TFS 2012 Local Workspace
+$tf/
+
+# Guidance Automation Toolkit
+*.gpState
+
+# ReSharper is a .NET coding add-in
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# TeamCity is a build add-in
+_TeamCity*
+
+# DotCover is a Code Coverage Tool
+*.dotCover
+
+# AxoCover is a Code Coverage Tool
+.axoCover/*
+!.axoCover/settings.json
+
+# Coverlet is a free, cross platform Code Coverage Tool
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# Visual Studio code coverage results
+*.coverage
+*.coveragexml
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# MightyMoose
+*.mm.*
+AutoTest.Net/
+
+# Web workbench (sass)
+.sass-cache/
+
+# Installshield output folder
+[Ee]xpress/
+
+# DocProject is a documentation generator add-in
+DocProject/buildhelp/
+DocProject/Help/*.HxT
+DocProject/Help/*.HxC
+DocProject/Help/*.hhc
+DocProject/Help/*.hhk
+DocProject/Help/*.hhp
+DocProject/Help/Html2
+DocProject/Help/html
+
+# Click-Once directory
+publish/
+
+# Publish Web Output
+*.[Pp]ublish.xml
+*.azurePubxml
+
+# Note: Comment the next line if you want to checkin your web deploy settings,
+# but database connection strings (with potential passwords) will be unencrypted
+*.pubxml
+*.publishproj
+
+# Microsoft Azure Web App publish settings. Comment the next line if you want to
+# checkin your Azure Web App publish settings, but sensitive information contained
+# in these scripts will be unencrypted
+*.azurePubxml
+
+# NuGet Packages
+*.nupkg
+# NuGet Symbol Packages
+*.snupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/[Pp]ackages/repositories.config
+# NuGet v3's project.json files produces more ignorable files
+*.nuget.props
+*.nuget.targets
+
+# Microsoft Azure Build Output
+csx/
+*.build.csdef
+
+# Microsoft Azure Emulator
+ecf/
+rcf/
+
+# Windows Store app package directories and files
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+_pkginfo.txt
+*.appx
+*.appxbundle
+*.appxupload
+
+# Visual Studio cache files
+# files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!?*.[Cc]ache/
+
+# ============================================
+# FINAL NOTES
+# ============================================
+# This .gitignore is designed to prevent:
+# 1. Planning documents with sensitive info
+# 2. Local configuration with secrets
+# 3. Database files
+# 4. Build artifacts
+# 5. IDE-specific files
+# 6. Certificates and keys
+# 7. Azure publish profiles
+# 8. Any credentials or secrets
+
+# ALWAYS REVIEW before committing:
+# - No connection strings in code
+# - No API keys in code
+# - No passwords in code
+# - No personal information
+# - Planning docs are ignored
