@@ -486,3 +486,4 @@ _pkginfo.txt
 # - No passwords in code
 # - No personal information
 # - Planning docs are ignored
+.azure-info.txt
