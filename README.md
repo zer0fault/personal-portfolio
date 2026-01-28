@@ -16,26 +16,18 @@ Professional portfolio website showcasing .NET expertise and software engineerin
 
 ### Backend
 - **Azure Functions** - Serverless HTTP triggers (.NET 9 Isolated)
-- **Entity Framework Core** - ORM for database access
+- **Entity Framework Core 9** - ORM with Code First migrations
 - **ASP.NET Core Identity** - Authentication & authorization
+- **MediatR** - CQRS pattern implementation
 
 ### Database
-- **Azure SQL Database** - Free tier (32 GB, 100 DTUs)
-- **SQLite** - Local development
+- **Azure SQL Database** - Cloud-hosted relational database
+- **SQLite** - Local development environment
 
 ### Infrastructure
-- **GitHub Pages** - Static frontend hosting (free)
-- **Azure Functions Consumption Plan** - API backend (free tier)
-- **GitHub Actions** - CI/CD pipelines
-
-## 💰 Cost
-
-**Monthly Cost: $0** (100% free tier usage)
-
-This portfolio is designed to operate entirely within free tier limits:
-- GitHub Pages: Unlimited for public repos
-- Azure Functions: 1M executions/month (expected usage <10K)
-- Azure SQL Free: 32 GB storage, 100 DTUs
+- **GitHub Pages** - Static frontend hosting
+- **Azure Functions Consumption Plan** - Serverless API backend
+- **GitHub Actions** - CI/CD automation
 
 ## 🏗️ Architecture
 
@@ -54,13 +46,13 @@ This portfolio is designed to operate entirely within free tier limits:
             ▼
 ┌────────────────────────────────┐
 │   Azure SQL Database           │
-│   Free Tier (32 GB)            │
+│   Relational Data Store        │
 └────────────────────────────────┘
 ```
 
 **Clean Architecture Layers:**
-- **Domain** - Core entities and business rules
-- **Application** - Use cases, DTOs, interfaces
+- **Domain** - Core entities, enums, and business rules
+- **Application** - Use cases, DTOs, interfaces, CQRS handlers
 - **Infrastructure** - Data access, EF Core, external services
 - **Functions.API** - Azure Functions HTTP triggers
 - **BlazorApp** - Blazor WebAssembly frontend
@@ -69,20 +61,20 @@ This portfolio is designed to operate entirely within free tier limits:
 
 ### Public Site
 - **Responsive Design** - Mobile, tablet, desktop optimized
-- **Dark/Light Mode** - Toggle with localStorage persistence
+- **Dark/Light Mode** - Theme toggle with localStorage persistence
 - **Hero Section** - Professional headshot and call-to-action
 - **About Section** - Professional bio, education, certifications
-- **Skills Section** - Categorized technical competencies
-- **Projects Portfolio** - Dynamic grid with detail modals
+- **Skills Section** - Categorized technical competencies with proficiency levels
+- **Projects Portfolio** - Dynamic project grid with detail modals
 - **Employment Timeline** - Professional experience visualization
-- **Contact Form** - Validated submission with database storage
+- **Contact Form** - Validated form submission with database persistence
 
 ### Admin Panel
-- **Secure Login** - JWT authentication
-- **Project Management** - CRUD operations for portfolio projects
-- **Employment Management** - Manage work history
-- **Contact Submissions** - View and manage form submissions
-- **Settings** - Update hero text, bio, social links
+- **Secure Authentication** - JWT-based authentication
+- **Project Management** - Full CRUD operations for portfolio projects
+- **Employment Management** - Manage work history and achievements
+- **Contact Submissions** - View and respond to contact form submissions
+- **Settings Management** - Update hero text, bio, and social links
 
 ## 🛠️ Local Development Setup
 
@@ -94,7 +86,7 @@ This portfolio is designed to operate entirely within free tier limits:
 
 ### Clone Repository
 ```bash
-git clone https://github.com/yourusername/personal-portfolio.git
+git clone https://github.com/zer0fault/personal-portfolio.git
 cd personal-portfolio
 ```
 
@@ -149,11 +141,11 @@ dotnet test --filter "Category=Integration"
 ## 📦 Deployment
 
 ### Prerequisites
-- Azure account (free tier)
+- Azure account with active subscription
 - GitHub account
 
 ### Azure Resources
-1. Create Azure SQL Free Database
+1. Create Azure SQL Database
 2. Create Azure Function App (Consumption Plan)
 3. Configure Function App settings (connection strings, JWT secret)
 
@@ -168,43 +160,44 @@ Push to `main` branch triggers automatic deployment:
 See [SECURITY.md](./SECURITY.md) for detailed security guidelines.
 
 **Key Points:**
-- No secrets in code (use Azure App Settings & GitHub Secrets)
-- Planning documents are git-ignored
-- HTTPS enforced
-- JWT authentication for admin
-- Passwords hashed with ASP.NET Core Identity
+- No secrets in source code (Azure App Settings & GitHub Secrets)
+- HTTPS enforced for all communications
+- JWT authentication for admin panel
+- Passwords hashed with ASP.NET Core Identity (PBKDF2)
+- Input validation with FluentValidation
+- SQL injection prevention via parameterized queries
 
 ## 📝 Project Structure
 
 ```
 Personal Portfolio/
-├── .github/
-│   └── workflows/           # CI/CD pipelines
+├── scripts/
+│   └── verify-commit.sh     # Pre-commit security checks
 ├── src/
-│   ├── Domain/              # Core entities
-│   ├── Application/         # Business logic
-│   ├── Infrastructure/      # Data access
-│   ├── Functions.API/       # Azure Functions
-│   └── BlazorApp/           # Blazor WebAssembly
+│   ├── Domain/              # Entities, enums, interfaces
+│   ├── Application/         # CQRS handlers, DTOs, validators
+│   ├── Infrastructure/      # EF Core, repositories
+│   ├── Functions.API/       # Azure Functions endpoints
+│   └── BlazorApp/           # Blazor WebAssembly SPA
 ├── tests/
 │   ├── Domain.Tests/
 │   ├── Application.Tests/
 │   ├── Infrastructure.Tests/
 │   └── Functions.API.Tests/
-├── docs/
-│   └── architecture/        # Architecture Decision Records
 ├── .gitignore
 ├── README.md
-└── SECURITY.md
+├── SECURITY.md
+└── PortfolioWebsite.sln
 ```
 
 ## 🎯 Development Principles
 
 - **SOLID Principles** - Applied throughout all layers
-- **Clean Architecture** - Clear separation of concerns
-- **Test-Driven Development** - >80% code coverage goal
-- **Zero-Cost Architecture** - All services within free tiers
-- **Security-First** - No secrets in code, secure authentication
+- **Clean Architecture** - Clear separation of concerns with dependency inversion
+- **CQRS Pattern** - Command/Query separation via MediatR
+- **Repository Pattern** - Abstraction over data access
+- **Test-Driven Development** - Comprehensive unit and integration tests
+- **Security-First** - Defense in depth, secure by default
 
 ## 📊 Code Quality
 
@@ -212,16 +205,6 @@ Personal Portfolio/
 - **Lighthouse Score:** Target >90
 - **Accessibility:** WCAG 2.1 Level AA compliant
 - **Browser Support:** Chrome, Firefox, Safari, Edge (latest 2 versions)
-
-## 🤝 Contributing
-
-This is a personal portfolio project. If you'd like to use it as a template:
-
-1. Fork the repository
-2. Update personal information (name, LinkedIn, etc.)
-3. Replace images in `wwwroot/assets/`
-4. Update `appsettings.json` with your API URLs
-5. Deploy to your own GitHub Pages and Azure
 
 ## 📄 License
 
@@ -231,7 +214,7 @@ MIT License - See [LICENSE](./LICENSE) file for details
 
 - **LinkedIn:** [Austin Little](https://linkedin.com/in/austin-little-200676169/)
 - **Email:** [Contact via portfolio site]
-- **GitHub:** [Your GitHub]
+- **GitHub:** [zer0fault](https://github.com/zer0fault)
 
 ## 🙏 Acknowledgments
 
