@@ -8,6 +8,12 @@ ZERO-COST-CHECKLIST.md
 IMPLEMENTATION-PLAN.md
 /docs/planning/
 
+# Phase status and test results (contain personal info)
+PHASE-*.md
+AZURE-TEST-RESULTS.md
+COMMIT-GUIDE.md
+.azure-info.txt
+
 # Personal notes and credentials
 notes.txt
 TODO.txt
