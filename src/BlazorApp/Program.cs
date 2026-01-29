@@ -19,5 +19,6 @@ builder.Services.AddScoped<IEmploymentService, EmploymentService>();
 builder.Services.AddScoped<ISkillsService, SkillsService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddScoped<ThemeService>();
 
 await builder.Build().RunAsync();

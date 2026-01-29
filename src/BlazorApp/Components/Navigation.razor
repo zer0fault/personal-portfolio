@@ -1,3 +1,6 @@
+@inject ThemeService ThemeService
+@implements IDisposable
+
 <nav class="navbar">
     <div class="navbar-container">
         <a href="#" class="navbar-brand">Austin Little</a>
@@ -12,12 +15,22 @@
             <a href="#projects" class="navbar-link" @onclick="CloseMobileMenu">Projects</a>
             <a href="#experience" class="navbar-link" @onclick="CloseMobileMenu">Experience</a>
             <a href="#contact" class="navbar-link" @onclick="CloseMobileMenu">Contact</a>
+
+            <button class="theme-toggle" @onclick="ToggleTheme" title="Toggle theme">
+                <i class="bi @(ThemeService.CurrentTheme == "light" ? "bi-moon-stars-fill" : "bi-sun-fill")"></i>
+            </button>
         </div>
     </div>
 </nav>
 
 @code {
     private bool mobileMenuOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ThemeService.InitializeAsync();
+        ThemeService.OnThemeChanged += StateHasChanged;
+    }
 
     private void ToggleMobileMenu()
     {
@@ -27,5 +40,15 @@
     private void CloseMobileMenu()
     {
         mobileMenuOpen = false;
+    }
+
+    private async Task ToggleTheme()
+    {
+        await ThemeService.ToggleThemeAsync();
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= StateHasChanged;
     }
 }
