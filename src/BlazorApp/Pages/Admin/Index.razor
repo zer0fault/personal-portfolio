@@ -1,0 +1,66 @@
+@page "/admin"
+@layout AdminLayout
+
+<PageTitle>Admin Dashboard</PageTitle>
+
+<div class="dashboard">
+    <h1 class="dashboard-title">Dashboard</h1>
+    <p class="dashboard-subtitle">Welcome to your portfolio admin panel</p>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <div class="dashboard-card-icon projects">
+                <i class="bi bi-folder"></i>
+            </div>
+            <div class="dashboard-card-content">
+                <h3>Projects</h3>
+                <p>Manage your portfolio projects</p>
+                <a href="/admin/projects" class="btn btn-sm btn-outline-primary">Manage</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-icon employment">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            <div class="dashboard-card-content">
+                <h3>Employment</h3>
+                <p>Update your work history</p>
+                <a href="/admin/employment" class="btn btn-sm btn-outline-primary">Manage</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-icon skills">
+                <i class="bi bi-star"></i>
+            </div>
+            <div class="dashboard-card-content">
+                <h3>Skills</h3>
+                <p>Add or edit your skills</p>
+                <a href="/admin/skills" class="btn btn-sm btn-outline-primary">Manage</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-icon contacts">
+                <i class="bi bi-envelope"></i>
+            </div>
+            <div class="dashboard-card-content">
+                <h3>Contact Submissions</h3>
+                <p>View contact form messages</p>
+                <a href="/admin/contacts" class="btn btn-sm btn-outline-primary">View</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <div class="dashboard-card-icon settings">
+                <i class="bi bi-gear"></i>
+            </div>
+            <div class="dashboard-card-content">
+                <h3>Settings</h3>
+                <p>Update site settings</p>
+                <a href="/admin/settings" class="btn btn-sm btn-outline-primary">Manage</a>
+            </div>
+        </div>
+    </div>
+</div>

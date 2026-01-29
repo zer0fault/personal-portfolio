@@ -1,0 +1,82 @@
+@inherits LayoutComponentBase
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+@if (!AuthService.IsAuthenticated)
+{
+    <div class="text-center p-5">
+        <p>Checking authentication...</p>
+    </div>
+}
+else
+{
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <h3>Admin Panel</h3>
+            </div>
+
+            <nav class="admin-nav">
+                <NavLink href="/admin" class="admin-nav-link" Match="NavLinkMatch.All">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </NavLink>
+                <NavLink href="/admin/projects" class="admin-nav-link">
+                    <i class="bi bi-folder"></i>
+                    <span>Projects</span>
+                </NavLink>
+                <NavLink href="/admin/employment" class="admin-nav-link">
+                    <i class="bi bi-briefcase"></i>
+                    <span>Employment</span>
+                </NavLink>
+                <NavLink href="/admin/skills" class="admin-nav-link">
+                    <i class="bi bi-star"></i>
+                    <span>Skills</span>
+                </NavLink>
+                <NavLink href="/admin/contacts" class="admin-nav-link">
+                    <i class="bi bi-envelope"></i>
+                    <span>Contact Submissions</span>
+                </NavLink>
+                <NavLink href="/admin/settings" class="admin-nav-link">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </NavLink>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <a href="/" class="admin-nav-link">
+                    <i class="bi bi-house"></i>
+                    <span>View Site</span>
+                </a>
+                <button class="admin-nav-link logout-btn" @onclick="HandleLogout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-content">
+                @Body
+            </div>
+        </main>
+    </div>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthService.InitializeAsync();
+
+        if (!AuthService.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/admin/login");
+        }
+    }
+
+    private async Task HandleLogout()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/admin/login");
+    }
+}
