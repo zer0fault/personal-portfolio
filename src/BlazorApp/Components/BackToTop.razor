@@ -1,0 +1,44 @@
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<button class="back-to-top @(isVisible ? "visible" : "")" @onclick="ScrollToTop" title="Back to top">
+    <i class="bi bi-arrow-up"></i>
+</button>
+
+@code {
+    private bool isVisible = false;
+    private DotNetObjectReference<BackToTop>? objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("backToTopButton.init", objRef);
+        }
+    }
+
+    [JSInvokable]
+    public void UpdateVisibility(bool visible)
+    {
+        if (isVisible != visible)
+        {
+            isVisible = visible;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ScrollToTop()
+    {
+        await JSRuntime.InvokeVoidAsync("backToTopButton.scrollToTop");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (objRef != null)
+        {
+            await JSRuntime.InvokeVoidAsync("backToTopButton.cleanup");
+            objRef.Dispose();
+        }
+    }
+}
