@@ -1,0 +1,120 @@
+@inject IEmploymentService EmploymentService
+
+<section class="employment-section" id="experience">
+    <div class="container">
+        <h2 class="section-title">Professional Experience</h2>
+
+        @if (isLoading)
+        {
+            <p class="text-center"><em>Loading experience...</em></p>
+        }
+        else if (!employment.Any())
+        {
+            <p class="text-center"><em>No employment history found.</em></p>
+        }
+        else
+        {
+            <div class="timeline">
+                @foreach (var job in employment.OrderBy(e => e.DisplayOrder))
+                {
+                    <div class="timeline-item">
+                        <div class="timeline-marker">
+                            <i class="bi bi-briefcase-fill"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <div>
+                                    <h3 class="job-title">@job.JobTitle</h3>
+                                    <h4 class="company-name">@job.CompanyName</h4>
+                                </div>
+                                <div class="job-dates">
+                                    <i class="bi bi-calendar3"></i>
+                                    @job.StartDate.ToString("MMM yyyy") - @(job.EndDate?.ToString("MMM yyyy") ?? "Present")
+                                    <span class="duration">(@GetDuration(job.StartDate, job.EndDate))</span>
+                                </div>
+                            </div>
+
+                            @if (job.Responsibilities.Any())
+                            {
+                                <div class="job-section">
+                                    <h5 class="section-subtitle">Key Responsibilities</h5>
+                                    <ul class="job-list">
+                                        @foreach (var responsibility in job.Responsibilities)
+                                        {
+                                            <li>@responsibility</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+
+                            @if (job.Achievements.Any())
+                            {
+                                <div class="job-section">
+                                    <h5 class="section-subtitle">Achievements</h5>
+                                    <ul class="job-list achievements-list">
+                                        @foreach (var achievement in job.Achievements)
+                                        {
+                                            <li><i class="bi bi-trophy-fill"></i> @achievement</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+
+                            @if (job.Technologies.Any())
+                            {
+                                <div class="job-section">
+                                    <h5 class="section-subtitle">Technologies</h5>
+                                    <div class="tech-tags">
+                                        @foreach (var tech in job.Technologies)
+                                        {
+                                            <span class="tech-tag">@tech</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private bool isLoading = true;
+    private List<Application.Employment.Queries.DTOs.EmploymentDto> employment = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            employment = await EmploymentService.GetAllEmploymentAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading employment: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private string GetDuration(DateTime startDate, DateTime? endDate)
+    {
+        var end = endDate ?? DateTime.UtcNow;
+        var duration = end - startDate;
+
+        var years = duration.Days / 365;
+        var months = (duration.Days % 365) / 30;
+
+        if (years > 0 && months > 0)
+            return $"{years} yr{(years != 1 ? "s" : "")} {months} mo{(months != 1 ? "s" : "")}";
+        else if (years > 0)
+            return $"{years} year{(years != 1 ? "s" : "")}";
+        else if (months > 0)
+            return $"{months} month{(months != 1 ? "s" : "")}";
+        else
+            return "Less than a month";
+    }
+}

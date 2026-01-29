@@ -1,0 +1,82 @@
+@inject ISkillsService SkillsService
+@using Domain.Enums
+
+<section class="skills-section" id="skills">
+    <div class="container">
+        <h2 class="section-title">Technical Skills</h2>
+
+        @if (isLoading)
+        {
+            <p class="text-center"><em>Loading skills...</em></p>
+        }
+        else if (!skillsByCategory.Any())
+        {
+            <p class="text-center"><em>No skills found.</em></p>
+        }
+        else
+        {
+            <div class="skills-container">
+                @foreach (var category in skillsByCategory.OrderBy(x => x.Key))
+                {
+                    <div class="skill-category">
+                        <h3 class="skill-category-heading">
+                            <i class="@GetCategoryIcon(category.Key)"></i>
+                            @GetCategoryName(category.Key)
+                        </h3>
+                        <div class="skill-tags">
+                            @foreach (var skill in category.Value.OrderBy(s => s.DisplayOrder))
+                            {
+                                <span class="skill-tag">@skill.Name</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private bool isLoading = true;
+    private Dictionary<SkillCategory, List<Application.Skills.Queries.DTOs.SkillDto>> skillsByCategory = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var skills = await SkillsService.GetAllSkillsAsync();
+            skillsByCategory = skills.GroupBy(s => s.Category)
+                .ToDictionary(g => g.Key, g => g.ToList());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading skills: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private string GetCategoryName(SkillCategory category) => category switch
+    {
+        SkillCategory.Language => "Languages",
+        SkillCategory.Framework => "Frameworks & Libraries",
+        SkillCategory.Cloud => "Cloud & DevOps",
+        SkillCategory.Architecture => "Architecture & Design",
+        SkillCategory.Practice => "Practices & Tools",
+        SkillCategory.Domain => "Domain Knowledge",
+        _ => category.ToString()
+    };
+
+    private string GetCategoryIcon(SkillCategory category) => category switch
+    {
+        SkillCategory.Language => "bi bi-code-slash",
+        SkillCategory.Framework => "bi bi-gear-fill",
+        SkillCategory.Cloud => "bi bi-cloud-fill",
+        SkillCategory.Architecture => "bi bi-diagram-3-fill",
+        SkillCategory.Practice => "bi bi-tools",
+        SkillCategory.Domain => "bi bi-building",
+        _ => "bi bi-star-fill"
+    };
+}
