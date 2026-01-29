@@ -1,50 +1,66 @@
 @page "/"
 @inject IProjectsService ProjectsService
+@using BlazorApp.Components
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Austin Little - Portfolio</PageTitle>
 
-<h1>Personal Portfolio - Austin Little</h1>
+<!-- Hero Section -->
+<HeroSection />
 
-<h2>Projects</h2>
+<!-- About Section -->
+<AboutSection />
 
-@if (projects == null)
-{
-    <p><em>Loading projects...</em></p>
-}
-else if (!projects.Any())
-{
-    <p><em>No projects found.</em></p>
-}
-else
-{
-    <div class="row">
-        @foreach (var project in projects)
+<!-- Projects Section -->
+<section class="projects-section" id="projects">
+    <div class="container">
+        <h2 class="section-title">Featured Projects</h2>
+
+        @if (projects == null)
         {
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">@project.Title</h5>
-                        <p class="card-text">@project.ShortDescription</p>
-                        <div class="mb-2">
-                            @foreach (var tech in project.Technologies)
-                            {
-                                <span class="badge bg-primary me-1">@tech</span>
-                            }
+            <p><em>Loading projects...</em></p>
+        }
+        else if (!projects.Any())
+        {
+            <p><em>No projects found.</em></p>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var project in projects)
+                {
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card project-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">@project.Title</h5>
+                                <p class="card-text">@project.ShortDescription</p>
+                                <div class="mb-3">
+                                    @foreach (var tech in project.Technologies)
+                                    {
+                                        <span class="badge bg-primary me-1 mb-1">@tech</span>
+                                    }
+                                </div>
+                                <div class="card-actions">
+                                    @if (!string.IsNullOrEmpty(project.GitHubUrl))
+                                    {
+                                        <a href="@project.GitHubUrl" class="btn btn-sm btn-outline-primary" target="_blank">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </a>
+                                    }
+                                    @if (!string.IsNullOrEmpty(project.LiveDemoUrl))
+                                    {
+                                        <a href="@project.LiveDemoUrl" class="btn btn-sm btn-outline-success ms-2" target="_blank">
+                                            <i class="bi bi-box-arrow-up-right"></i> Live Demo
+                                        </a>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        @if (!string.IsNullOrEmpty(project.GitHubUrl))
-                        {
-                            <a href="@project.GitHubUrl" class="btn btn-sm btn-outline-primary" target="_blank">View on GitHub</a>
-                        }
-                        @if (!string.IsNullOrEmpty(project.LiveDemoUrl))
-                        {
-                            <a href="@project.LiveDemoUrl" class="btn btn-sm btn-outline-success ms-2" target="_blank">Live Demo</a>
-                        }
                     </div>
-                </div>
+                }
             </div>
         }
     </div>
-}
+</section>
 
 @code {
     private List<Application.Projects.Queries.DTOs.ProjectDto>? projects;

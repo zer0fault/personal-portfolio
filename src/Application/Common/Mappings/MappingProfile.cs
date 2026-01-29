@@ -1,6 +1,7 @@
 using Application.Contact.Commands;
 using Application.Employment.Queries.DTOs;
 using Application.Projects.Queries.DTOs;
+using Application.Settings.Queries.DTOs;
 using Application.Skills.Queries.DTOs;
 using AutoMapper;
 using Domain.Entities;
@@ -36,6 +37,9 @@ public class MappingProfile : Profile
 
         // Skill mappings
         CreateMap<Skill, SkillDto>();
+
+        // Settings mappings
+        CreateMap<Domain.Entities.Settings, SettingsDto>();
 
         // Contact mappings
         CreateMap<ContactSubmissionDto, ContactSubmission>()

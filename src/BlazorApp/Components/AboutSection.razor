@@ -1,0 +1,102 @@
+@inject ISettingsService SettingsService
+
+<section class="about-section" id="about">
+    <div class="container">
+        @if (isLoading)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <h2 class="section-title">About Me</h2>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="about-bio">
+                        @((MarkupString)FormatBio(bio))
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    @if (education.Any())
+                    {
+                        <div class="about-card">
+                            <h3 class="card-title">
+                                <i class="bi bi-mortarboard"></i> Education
+                            </h3>
+                            <ul class="about-list">
+                                @foreach (var edu in education)
+                                {
+                                    <li>@edu</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    @if (certifications.Any())
+                    {
+                        <div class="about-card">
+                            <h3 class="card-title">
+                                <i class="bi bi-award"></i> Certifications
+                            </h3>
+                            <ul class="about-list">
+                                @foreach (var cert in certifications)
+                                {
+                                    <li>@cert</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    private bool isLoading = true;
+    private string bio = string.Empty;
+    private List<string> education = new();
+    private List<string> certifications = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var settings = await SettingsService.GetSettingsByCategoryAsync("About");
+
+            bio = settings.FirstOrDefault(s => s.Key == "Bio")?.Value ??
+                "Passionate software engineer with expertise in .NET development and modern web technologies.";
+
+            var educationStr = settings.FirstOrDefault(s => s.Key == "Education")?.Value ?? string.Empty;
+            if (!string.IsNullOrEmpty(educationStr))
+            {
+                education = educationStr.Split(';').Select(e => e.Trim()).Where(e => !string.IsNullOrEmpty(e)).ToList();
+            }
+
+            var certificationsStr = settings.FirstOrDefault(s => s.Key == "Certifications")?.Value ?? string.Empty;
+            if (!string.IsNullOrEmpty(certificationsStr))
+            {
+                certifications = certificationsStr.Split(';').Select(c => c.Trim()).Where(c => !string.IsNullOrEmpty(c)).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading about settings: {ex.Message}");
+            // Use defaults if loading fails
+            bio = "Passionate software engineer with expertise in .NET development and modern web technologies.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private string FormatBio(string bioText)
+    {
+        // Convert line breaks to <p> tags for better formatting
+        if (string.IsNullOrEmpty(bioText))
+            return string.Empty;
+
+        var paragraphs = bioText.Split(new[] { "\n\n", "\r\n\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+        return string.Join("", paragraphs.Select(p => $"<p>{p.Trim()}</p>"));
+    }
+}

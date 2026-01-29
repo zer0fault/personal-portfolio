@@ -5,7 +5,7 @@ namespace Domain.Entities;
 /// <summary>
 /// Represents a configuration setting key-value pair
 /// </summary>
-public class Settings : BaseEntity
+public class Settings : BaseEntity, ISoftDeletable
 {
     /// <summary>
     /// Unique setting key (e.g., "HeroHeadline", "AboutBio")
@@ -26,4 +26,9 @@ public class Settings : BaseEntity
     /// Date and time when the setting was last modified (UTC)
     /// </summary>
     public DateTime LastModified { get; set; }
+
+    /// <summary>
+    /// Indicates whether the setting has been soft deleted
+    /// </summary>
+    public bool IsDeleted { get; set; }
 }

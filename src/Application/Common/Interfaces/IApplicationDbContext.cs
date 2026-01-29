@@ -36,7 +36,7 @@ public interface IApplicationDbContext
     /// <summary>
     /// DbSet for Settings entities
     /// </summary>
-    DbSet<Settings> Settings { get; }
+    DbSet<Domain.Entities.Settings> Settings { get; }
 
     /// <summary>
     /// Saves changes asynchronously

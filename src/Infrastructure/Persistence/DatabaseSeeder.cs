@@ -93,6 +93,88 @@ public static class DatabaseSeeder
 
         context.Skills.AddRange(skills);
 
+        // Seed Settings
+        var settings = new[]
+        {
+            // Hero Section Settings
+            new Settings
+            {
+                Key = "Name",
+                Value = "Austin Little",
+                Category = "Hero",
+                LastModified = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            },
+            new Settings
+            {
+                Key = "Title",
+                Value = "Software Engineer",
+                Category = "Hero",
+                LastModified = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            },
+            new Settings
+            {
+                Key = "Tagline",
+                Value = "Building innovative solutions with .NET and modern web technologies",
+                Category = "Hero",
+                LastModified = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            },
+            new Settings
+            {
+                Key = "CTAText",
+                Value = "Get In Touch",
+                Category = "Hero",
+                LastModified = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            },
+            new Settings
+            {
+                Key = "GitHubUrl",
+                Value = "https://github.com/zer0fault",
+                Category = "Hero",
+                LastModified = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            },
+
+            // About Section Settings
+            new Settings
+            {
+                Key = "Bio",
+                Value = "Passionate software engineer with expertise in .NET development, cloud computing, and modern web technologies. I specialize in building scalable, maintainable applications using Clean Architecture principles and industry best practices.\n\nWith a strong foundation in both backend and frontend development, I enjoy solving complex problems and delivering high-quality software solutions that make a real impact.",
+                Category = "About",
+                LastModified = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            },
+            new Settings
+            {
+                Key = "Education",
+                Value = "Bachelor of Science in Computer Science; Additional coursework in Software Engineering and Cloud Architecture",
+                Category = "About",
+                LastModified = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            },
+            new Settings
+            {
+                Key = "Certifications",
+                Value = "Microsoft Certified: Azure Developer Associate; AWS Certified Solutions Architect",
+                Category = "About",
+                LastModified = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow,
+                ModifiedDate = DateTime.UtcNow
+            }
+        };
+
+        context.Settings.AddRange(settings);
+
         await context.SaveChangesAsync();
     }
 }
