@@ -26,9 +26,19 @@ public class SkillsFunctions
     /// </summary>
     [Function("GetSkills")]
     public async Task<HttpResponseData> GetSkills(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "skills")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "skills")] HttpRequestData req,
         FunctionContext context)
     {
+        // Handle OPTIONS preflight request
+        if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+        {
+            var preflightResponse = req.CreateResponse(HttpStatusCode.OK);
+            preflightResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            preflightResponse.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            preflightResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            return preflightResponse;
+        }
+
         _logger.LogInformation("Getting all skills");
 
         try
@@ -37,6 +47,9 @@ public class SkillsFunctions
             var skills = await _mediator.Send(query);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            response.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
             await response.WriteAsJsonAsync(skills);
             return response;
         }
@@ -44,6 +57,7 @@ public class SkillsFunctions
         {
             _logger.LogError(ex, "Error getting skills");
             var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
             await response.WriteAsJsonAsync(new { error = "An error occurred while retrieving skills" });
             return response;
         }

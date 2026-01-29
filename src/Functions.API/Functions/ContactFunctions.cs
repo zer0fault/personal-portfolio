@@ -27,9 +27,19 @@ public class ContactFunctions
     /// </summary>
     [Function("SubmitContact")]
     public async Task<HttpResponseData> SubmitContact(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "contact")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "contact")] HttpRequestData req,
         FunctionContext context)
     {
+        // Handle OPTIONS preflight request
+        if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+        {
+            var preflightResponse = req.CreateResponse(HttpStatusCode.OK);
+            preflightResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            preflightResponse.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
+            preflightResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            return preflightResponse;
+        }
+
         _logger.LogInformation("Processing contact form submission");
 
         try
@@ -38,6 +48,7 @@ public class ContactFunctions
             if (string.IsNullOrEmpty(requestBody))
             {
                 var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                badRequestResponse.Headers.Add("Access-Control-Allow-Origin", "*");
                 await badRequestResponse.WriteAsJsonAsync(new { error = "Request body is required" });
                 return badRequestResponse;
             }
@@ -49,6 +60,7 @@ public class ContactFunctions
             if (dto == null)
             {
                 var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                badRequestResponse.Headers.Add("Access-Control-Allow-Origin", "*");
                 await badRequestResponse.WriteAsJsonAsync(new { error = "Invalid request format" });
                 return badRequestResponse;
             }
@@ -62,6 +74,9 @@ public class ContactFunctions
             var submissionId = await _mediator.Send(command);
 
             var response = req.CreateResponse(HttpStatusCode.Created);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            response.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
+            response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
             await response.WriteAsJsonAsync(new { id = submissionId, message = "Contact form submitted successfully" });
             return response;
         }
@@ -69,6 +84,7 @@ public class ContactFunctions
         {
             _logger.LogWarning(ex, "Validation failed for contact submission");
             var validationResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+            validationResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             await validationResponse.WriteAsJsonAsync(new
             {
                 error = "Validation failed",
@@ -80,6 +96,7 @@ public class ContactFunctions
         {
             _logger.LogError(ex, "Error processing contact submission");
             var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
             await response.WriteAsJsonAsync(new { error = "An error occurred while processing your submission" });
             return response;
         }

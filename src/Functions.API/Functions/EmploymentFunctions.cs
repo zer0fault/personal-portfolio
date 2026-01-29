@@ -26,9 +26,19 @@ public class EmploymentFunctions
     /// </summary>
     [Function("GetEmployment")]
     public async Task<HttpResponseData> GetEmployment(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "employment")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "employment")] HttpRequestData req,
         FunctionContext context)
     {
+        // Handle OPTIONS preflight request
+        if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+        {
+            var preflightResponse = req.CreateResponse(HttpStatusCode.OK);
+            preflightResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            preflightResponse.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            preflightResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            return preflightResponse;
+        }
+
         _logger.LogInformation("Getting employment history");
 
         try
@@ -37,6 +47,9 @@ public class EmploymentFunctions
             var employment = await _mediator.Send(query);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            response.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
             await response.WriteAsJsonAsync(employment);
             return response;
         }
@@ -44,6 +57,7 @@ public class EmploymentFunctions
         {
             _logger.LogError(ex, "Error getting employment history");
             var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
             await response.WriteAsJsonAsync(new { error = "An error occurred while retrieving employment history" });
             return response;
         }

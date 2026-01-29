@@ -5,7 +5,6 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Text.Json;
 
 namespace Functions.API.Functions;
 
@@ -28,9 +27,19 @@ public class ProjectsFunctions
     /// </summary>
     [Function("GetProjects")]
     public async Task<HttpResponseData> GetProjects(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "projects")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "projects")] HttpRequestData req,
         FunctionContext context)
     {
+        // Handle OPTIONS preflight request
+        if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+        {
+            var preflightResponse = req.CreateResponse(HttpStatusCode.OK);
+            preflightResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            preflightResponse.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            preflightResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            return preflightResponse;
+        }
+
         _logger.LogInformation("Getting all projects");
 
         try
@@ -39,6 +48,9 @@ public class ProjectsFunctions
             var projects = await _mediator.Send(query);
 
             var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            response.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
             await response.WriteAsJsonAsync(projects);
             return response;
         }
@@ -46,6 +58,7 @@ public class ProjectsFunctions
         {
             _logger.LogError(ex, "Error getting projects");
             var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
             await response.WriteAsJsonAsync(new { error = "An error occurred while retrieving projects" });
             return response;
         }
@@ -56,10 +69,20 @@ public class ProjectsFunctions
     /// </summary>
     [Function("GetProjectById")]
     public async Task<HttpResponseData> GetProjectById(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "projects/{id}")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "options", Route = "projects/{id}")] HttpRequestData req,
         FunctionContext context,
         int id)
     {
+        // Handle OPTIONS preflight request
+        if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+        {
+            var preflightResponse = req.CreateResponse(HttpStatusCode.OK);
+            preflightResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            preflightResponse.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            preflightResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            return preflightResponse;
+        }
+
         _logger.LogInformation("Getting project {ProjectId}", id);
 
         try
@@ -70,11 +93,15 @@ public class ProjectsFunctions
             if (project == null)
             {
                 var notFoundResponse = req.CreateResponse(HttpStatusCode.NotFound);
+                notFoundResponse.Headers.Add("Access-Control-Allow-Origin", "*");
                 await notFoundResponse.WriteAsJsonAsync(new { error = "Project not found" });
                 return notFoundResponse;
             }
 
             var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            response.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
             await response.WriteAsJsonAsync(project);
             return response;
         }
@@ -82,6 +109,7 @@ public class ProjectsFunctions
         {
             _logger.LogError(ex, "Error getting project {ProjectId}", id);
             var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
             await response.WriteAsJsonAsync(new { error = "An error occurred while retrieving the project" });
             return response;
         }
