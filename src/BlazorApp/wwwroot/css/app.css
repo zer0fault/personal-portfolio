@@ -1341,6 +1341,11 @@ code {
     font-weight: 600;
 }
 
+/* Fix Bootstrap card-body text color for accessibility */
+.card-body {
+    color: var(--text-primary) !important;
+}
+
 .form-container .form-label {
     font-weight: 600;
     color: var(--text-primary);
