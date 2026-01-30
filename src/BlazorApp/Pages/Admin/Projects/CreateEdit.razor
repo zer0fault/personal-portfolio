@@ -1,0 +1,322 @@
+@page "/admin/projects/create"
+@page "/admin/projects/edit/{id:int}"
+@layout AdminLayout
+@using Application.Projects.Queries.DTOs
+@using Application.Projects.Commands.CreateProject
+@using Application.Projects.Commands.UpdateProject
+@using Domain.Enums
+@using System.ComponentModel.DataAnnotations
+@inject IProjectsService ProjectsService
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(IsEditMode ? "Edit Project" : "Create Project")</PageTitle>
+
+<div class="admin-page">
+    <div class="admin-page-header">
+        <div>
+            <h1 class="admin-page-title">@(IsEditMode ? "Edit Project" : "Create New Project")</h1>
+            <p class="admin-page-subtitle">@(IsEditMode ? "Update project details" : "Add a new project to your portfolio")</p>
+        </div>
+        <button class="btn btn-outline-secondary" @onclick="NavigateBack">
+            <i class="bi bi-arrow-left"></i> Back to Projects
+        </button>
+    </div>
+
+    @if (isLoading && IsEditMode)
+    {
+        <div class="loading-container">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading project...</p>
+        </div>
+    }
+    else
+    {
+        <div class="form-container">
+            <EditForm Model="@model" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle"></i> @errorMessage
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Basic Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Title <span class="text-danger">*</span></label>
+                                    <InputText @bind-Value="model.Title" class="form-control" placeholder="Project title" />
+                                    <ValidationMessage For="@(() => model.Title)" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Short Description <span class="text-danger">*</span></label>
+                                    <InputTextArea @bind-Value="model.ShortDescription" class="form-control" rows="2"
+                                                   placeholder="Brief description (shown on project cards)" maxlength="150" />
+                                    <small class="text-muted">@model.ShortDescription.Length / 150 characters</small>
+                                    <ValidationMessage For="@(() => model.ShortDescription)" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Full Description <span class="text-danger">*</span></label>
+                                    <InputTextArea @bind-Value="model.FullDescription" class="form-control" rows="6"
+                                                   placeholder="Detailed project description" />
+                                    <ValidationMessage For="@(() => model.FullDescription)" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Technologies</label>
+                                    <InputText @bind-Value="technologiesInput" class="form-control"
+                                               placeholder="Enter technologies separated by commas (e.g., C#, Blazor, Azure)" />
+                                    <small class="text-muted">Separate multiple technologies with commas</small>
+                                    @if (model.Technologies.Any())
+                                    {
+                                        <div class="tech-tags mt-2">
+                                            @foreach (var tech in model.Technologies)
+                                            {
+                                                <span class="tech-tag-small">@tech</span>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <InputSelect @bind-Value="model.Status" class="form-select">
+                                        <option value="@ProjectStatus.Draft">Draft</option>
+                                        <option value="@ProjectStatus.Published">Published</option>
+                                        <option value="@ProjectStatus.Archived">Archived</option>
+                                    </InputSelect>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Display Order</label>
+                                    <InputNumber @bind-Value="model.DisplayOrder" class="form-control" min="0" />
+                                    <small class="text-muted">Lower numbers appear first</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">GitHub URL</label>
+                                    <InputText @bind-Value="model.GitHubUrl" class="form-control"
+                                               placeholder="https://github.com/user/repo" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Live Demo URL</label>
+                                    <InputText @bind-Value="model.LiveDemoUrl" class="form-control"
+                                               placeholder="https://demo.example.com" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" disabled="@isSaving">
+                        @if (isSaving)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span>Saving...</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-save"></i>
+                            <span>@(IsEditMode ? "Update Project" : "Create Project")</span>
+                        }
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" @onclick="NavigateBack" disabled="@isSaving">
+                        Cancel
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private ProjectFormModel model = new();
+    private string technologiesInput = string.Empty;
+    private bool isLoading = false;
+    private bool isSaving = false;
+    private string errorMessage = string.Empty;
+
+    private bool IsEditMode => Id.HasValue && Id.Value > 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEditMode)
+        {
+            await LoadProject();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Update technologies input when model changes
+        technologiesInput = string.Join(", ", model.Technologies);
+    }
+
+    private async Task LoadProject()
+    {
+        isLoading = true;
+        var project = await ProjectsService.GetProjectByIdForAdminAsync(Id!.Value);
+
+        if (project == null)
+        {
+            errorMessage = "Project not found";
+            isLoading = false;
+            return;
+        }
+
+        model.Title = project.Title;
+        model.ShortDescription = project.ShortDescription;
+        model.FullDescription = project.FullDescription;
+        model.Technologies = project.Technologies.ToList();
+        model.GitHubUrl = project.GitHubUrl;
+        model.LiveDemoUrl = project.LiveDemoUrl;
+        model.DisplayOrder = 0; // Will be set from project when available
+        model.Status = project.Status;
+
+        technologiesInput = string.Join(", ", model.Technologies);
+        isLoading = false;
+    }
+
+    private void UpdateTechnologies()
+    {
+        if (!string.IsNullOrWhiteSpace(technologiesInput))
+        {
+            model.Technologies = technologiesInput
+                .Split(',')
+                .Select(t => t.Trim())
+                .Where(t => !string.IsNullOrWhiteSpace(t))
+                .ToList();
+        }
+        else
+        {
+            model.Technologies.Clear();
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        errorMessage = string.Empty;
+        isSaving = true;
+
+        // Update technologies from input
+        UpdateTechnologies();
+
+        try
+        {
+            if (IsEditMode)
+            {
+                var command = new UpdateProjectCommand
+                {
+                    Id = Id!.Value,
+                    Title = model.Title,
+                    ShortDescription = model.ShortDescription,
+                    FullDescription = model.FullDescription,
+                    Technologies = model.Technologies,
+                    GitHubUrl = model.GitHubUrl,
+                    LiveDemoUrl = model.LiveDemoUrl,
+                    DisplayOrder = model.DisplayOrder,
+                    Status = model.Status
+                };
+
+                var success = await ProjectsService.UpdateProjectAsync(command);
+                if (success)
+                {
+                    NavigateBack();
+                }
+                else
+                {
+                    errorMessage = "Failed to update project. Please try again.";
+                }
+            }
+            else
+            {
+                var command = new CreateProjectCommand
+                {
+                    Title = model.Title,
+                    ShortDescription = model.ShortDescription,
+                    FullDescription = model.FullDescription,
+                    Technologies = model.Technologies,
+                    GitHubUrl = model.GitHubUrl,
+                    LiveDemoUrl = model.LiveDemoUrl,
+                    DisplayOrder = model.DisplayOrder,
+                    Status = model.Status
+                };
+
+                var projectId = await ProjectsService.CreateProjectAsync(command);
+                if (projectId.HasValue)
+                {
+                    NavigateBack();
+                }
+                else
+                {
+                    errorMessage = "Failed to create project. Please try again.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+            Console.WriteLine($"Error saving project: {ex}");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/admin/projects");
+    }
+
+    public class ProjectFormModel
+    {
+        [Required(ErrorMessage = "Title is required")]
+        [StringLength(200, ErrorMessage = "Title cannot exceed 200 characters")]
+        public string Title { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Short description is required")]
+        [StringLength(150, ErrorMessage = "Short description cannot exceed 150 characters")]
+        public string ShortDescription { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Full description is required")]
+        public string FullDescription { get; set; } = string.Empty;
+
+        public List<string> Technologies { get; set; } = new();
+
+        [Url(ErrorMessage = "Please enter a valid URL")]
+        public string? GitHubUrl { get; set; }
+
+        [Url(ErrorMessage = "Please enter a valid URL")]
+        public string? LiveDemoUrl { get; set; }
+
+        [Range(0, int.MaxValue, ErrorMessage = "Display order must be a positive number")]
+        public int DisplayOrder { get; set; }
+
+        public ProjectStatus Status { get; set; } = ProjectStatus.Draft;
+    }
+}
