@@ -1,4 +1,5 @@
 using Application.Contact.Commands;
+using Application.Contact.Queries.DTOs;
 using Application.Employment.Queries.DTOs;
 using Application.Projects.Queries.DTOs;
 using Application.Settings.Queries.DTOs;
@@ -42,12 +43,16 @@ public class MappingProfile : Profile
         CreateMap<Domain.Entities.Settings, SettingsDto>();
 
         // Contact mappings
-        CreateMap<ContactSubmissionDto, ContactSubmission>()
+        CreateMap<Application.Contact.Commands.ContactSubmissionDto, ContactSubmission>()
             .ForMember(dest => dest.SubmittedDate, opt => opt.Ignore())
             .ForMember(dest => dest.IsRead, opt => opt.MapFrom(src => false))
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
-            .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore());
+            .ForMember(dest => dest.ModifiedDate, opt => opt.Ignore())
+            .ForMember(dest => dest.IpAddress, opt => opt.Ignore());
+
+        // Contact admin query mapping
+        CreateMap<ContactSubmission, Application.Contact.Queries.DTOs.ContactSubmissionDto>();
     }
 
     /// <summary>
