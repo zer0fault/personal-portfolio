@@ -1,0 +1,268 @@
+@page "/admin/skills/create"
+@page "/admin/skills/edit/{id:int}"
+@layout AdminLayout
+@using Application.Skills.Queries.DTOs
+@using Application.Skills.Commands.CreateSkill
+@using Application.Skills.Commands.UpdateSkill
+@using Domain.Enums
+@using System.ComponentModel.DataAnnotations
+@inject ISkillsService SkillsService
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(IsEditMode ? "Edit Skill" : "Add Skill")</PageTitle>
+
+<div class="admin-page">
+    <div class="admin-page-header">
+        <div>
+            <h1 class="admin-page-title">@(IsEditMode ? "Edit Skill" : "Add New Skill")</h1>
+            <p class="admin-page-subtitle">@(IsEditMode ? "Update skill details" : "Add a new skill to your portfolio")</p>
+        </div>
+        <button class="btn btn-outline-secondary" @onclick="NavigateBack">
+            <i class="bi bi-arrow-left"></i> Back to Skills
+        </button>
+    </div>
+
+    @if (isLoading && IsEditMode)
+    {
+        <div class="loading-container">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading skill...</p>
+        </div>
+    }
+    else
+    {
+        <div class="form-container">
+            <EditForm Model="@model" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle"></i> @errorMessage
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Skill Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Skill Name <span class="text-danger">*</span></label>
+                                    <InputText @bind-Value="model.Name" class="form-control" placeholder="e.g., C#, React, Azure" />
+                                    <ValidationMessage For="@(() => model.Name)" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Category <span class="text-danger">*</span></label>
+                                    <InputSelect @bind-Value="model.Category" class="form-control">
+                                        <option value="">-- Select Category --</option>
+                                        @foreach (var category in Enum.GetValues<SkillCategory>())
+                                        {
+                                            <option value="@category">@GetCategoryName(category)</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => model.Category)" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Icon URL</label>
+                                    <InputText @bind-Value="model.IconUrl" class="form-control" placeholder="https://example.com/icon.svg" />
+                                    <small class="text-muted">Optional: URL to an icon representing this skill</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Display Order</label>
+                                    <InputNumber @bind-Value="model.DisplayOrder" class="form-control" min="0" />
+                                    <small class="text-muted">Lower numbers appear first within category</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Category Info</h5>
+                            </div>
+                            <div class="card-body">
+                                <small class="text-muted">
+                                    <strong>Language:</strong> Programming languages<br/>
+                                    <strong>Framework:</strong> Frameworks & libraries<br/>
+                                    <strong>Cloud:</strong> Cloud platforms<br/>
+                                    <strong>Architecture:</strong> Patterns & principles<br/>
+                                    <strong>Practice:</strong> Development practices<br/>
+                                    <strong>Domain:</strong> Domain knowledge
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" disabled="@isSaving">
+                        @if (isSaving)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            <span>Saving...</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-save"></i>
+                            <span>@(IsEditMode ? "Update Skill" : "Add Skill")</span>
+                        }
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" @onclick="NavigateBack" disabled="@isSaving">
+                        Cancel
+                    </button>
+                </div>
+            </EditForm>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private SkillFormModel model = new();
+    private bool isLoading = false;
+    private bool isSaving = false;
+    private string errorMessage = string.Empty;
+
+    private bool IsEditMode => Id.HasValue && Id.Value > 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (IsEditMode)
+        {
+            await LoadSkill();
+        }
+    }
+
+    private async Task LoadSkill()
+    {
+        isLoading = true;
+        var skill = await SkillsService.GetSkillByIdAsync(Id!.Value);
+
+        if (skill == null)
+        {
+            errorMessage = "Skill not found";
+            isLoading = false;
+            return;
+        }
+
+        model.Name = skill.Name;
+        model.Category = skill.Category;
+        model.DisplayOrder = skill.DisplayOrder;
+        model.IconUrl = skill.IconUrl;
+
+        isLoading = false;
+    }
+
+    private async Task HandleSubmit()
+    {
+        errorMessage = string.Empty;
+        isSaving = true;
+
+        try
+        {
+            if (IsEditMode)
+            {
+                var command = new UpdateSkillCommand
+                {
+                    Id = Id!.Value,
+                    Name = model.Name,
+                    Category = model.Category,
+                    DisplayOrder = model.DisplayOrder,
+                    IconUrl = model.IconUrl
+                };
+
+                var success = await SkillsService.UpdateSkillAsync(command);
+                if (success)
+                {
+                    NavigateBack();
+                }
+                else
+                {
+                    errorMessage = "Failed to update skill. Please try again.";
+                }
+            }
+            else
+            {
+                var command = new CreateSkillCommand
+                {
+                    Name = model.Name,
+                    Category = model.Category,
+                    DisplayOrder = model.DisplayOrder,
+                    IconUrl = model.IconUrl
+                };
+
+                var skillId = await SkillsService.CreateSkillAsync(command);
+                if (skillId.HasValue)
+                {
+                    NavigateBack();
+                }
+                else
+                {
+                    errorMessage = "Failed to create skill. Please try again.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+            Console.WriteLine($"Error saving skill: {ex}");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/admin/skills");
+    }
+
+    private string GetCategoryName(SkillCategory category)
+    {
+        return category switch
+        {
+            SkillCategory.Language => "Programming Languages",
+            SkillCategory.Framework => "Frameworks & Libraries",
+            SkillCategory.Cloud => "Cloud Platforms",
+            SkillCategory.Architecture => "Architecture & Patterns",
+            SkillCategory.Practice => "Development Practices",
+            SkillCategory.Domain => "Domain Knowledge",
+            _ => category.ToString()
+        };
+    }
+
+    public class SkillFormModel
+    {
+        [Required(ErrorMessage = "Skill name is required")]
+        [StringLength(100, ErrorMessage = "Skill name cannot exceed 100 characters")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Category is required")]
+        public SkillCategory Category { get; set; }
+
+        [Range(0, int.MaxValue, ErrorMessage = "Display order must be a positive number")]
+        public int DisplayOrder { get; set; }
+
+        [Url(ErrorMessage = "Icon URL must be a valid URL")]
+        public string? IconUrl { get; set; }
+    }
+}

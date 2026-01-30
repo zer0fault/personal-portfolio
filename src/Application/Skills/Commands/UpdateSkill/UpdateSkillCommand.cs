@@ -1,11 +1,12 @@
 using Domain.Enums;
+using MediatR;
 
-namespace Application.Skills.Queries.DTOs;
+namespace Application.Skills.Commands.UpdateSkill;
 
 /// <summary>
-/// DTO for skill display
+/// Command to update an existing skill
 /// </summary>
-public class SkillDto
+public class UpdateSkillCommand : IRequest<bool>
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

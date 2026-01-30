@@ -1,13 +1,13 @@
 using Domain.Enums;
+using MediatR;
 
-namespace Application.Skills.Queries.DTOs;
+namespace Application.Skills.Commands.CreateSkill;
 
 /// <summary>
-/// DTO for skill display
+/// Command to create a new skill
 /// </summary>
-public class SkillDto
+public class CreateSkillCommand : IRequest<int>
 {
-    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public SkillCategory Category { get; set; }
     public int DisplayOrder { get; set; }
