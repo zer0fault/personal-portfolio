@@ -1,10 +1,15 @@
+using Application.Settings.Commands.CreateSetting;
+using Application.Settings.Commands.DeleteSetting;
+using Application.Settings.Commands.UpdateSetting;
 using Application.Settings.Queries.GetAllSettings;
+using Application.Settings.Queries.GetSettingById;
 using Application.Settings.Queries.GetSettingsByCategory;
 using MediatR;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
+using System.Text.Json;
 
 namespace Functions.API.Functions;
 
@@ -103,6 +108,156 @@ public class SettingsFunctions
             var response = req.CreateResponse(HttpStatusCode.InternalServerError);
             response.Headers.Add("Access-Control-Allow-Origin", "*");
             await response.WriteAsJsonAsync(new { error = "An error occurred while retrieving settings" });
+            return response;
+        }
+    }
+
+    /// <summary>
+    /// GET /api/settings/{id} - Get setting by ID (admin)
+    /// </summary>
+    [Function("GetSettingById")]
+    public async Task<HttpResponseData> GetSettingById(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "settings/{id:int}")] HttpRequestData req,
+        FunctionContext context,
+        int id)
+    {
+        _logger.LogInformation("Getting setting with ID {SettingId}", id);
+
+        try
+        {
+            var query = new GetSettingByIdQuery(id);
+            var setting = await _mediator.Send(query);
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await response.WriteAsJsonAsync(setting);
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting setting {SettingId}", id);
+            var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await response.WriteAsJsonAsync(new { error = "An error occurred while retrieving the setting" });
+            return response;
+        }
+    }
+
+    /// <summary>
+    /// POST /api/settings - Create a new setting (admin)
+    /// </summary>
+    [Function("CreateSetting")]
+    public async Task<HttpResponseData> CreateSetting(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "settings")] HttpRequestData req,
+        FunctionContext context)
+    {
+        _logger.LogInformation("Creating new setting");
+
+        try
+        {
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var command = JsonSerializer.Deserialize<CreateSettingCommand>(requestBody, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (command == null)
+            {
+                var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                badRequestResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+                await badRequestResponse.WriteAsJsonAsync(new { error = "Invalid request body" });
+                return badRequestResponse;
+            }
+
+            var settingId = await _mediator.Send(command);
+
+            var response = req.CreateResponse(HttpStatusCode.Created);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await response.WriteAsJsonAsync(new { id = settingId });
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating setting");
+            var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await response.WriteAsJsonAsync(new { error = "An error occurred while creating the setting" });
+            return response;
+        }
+    }
+
+    /// <summary>
+    /// PUT /api/settings/{id} - Update an existing setting (admin)
+    /// </summary>
+    [Function("UpdateSetting")]
+    public async Task<HttpResponseData> UpdateSetting(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "settings/{id:int}")] HttpRequestData req,
+        FunctionContext context,
+        int id)
+    {
+        _logger.LogInformation("Updating setting with ID {SettingId}", id);
+
+        try
+        {
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var command = JsonSerializer.Deserialize<UpdateSettingCommand>(requestBody, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (command == null)
+            {
+                var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                badRequestResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+                await badRequestResponse.WriteAsJsonAsync(new { error = "Invalid request body" });
+                return badRequestResponse;
+            }
+
+            command.Id = id;
+            await _mediator.Send(command);
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await response.WriteAsJsonAsync(new { message = "Setting updated successfully" });
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating setting {SettingId}", id);
+            var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await response.WriteAsJsonAsync(new { error = "An error occurred while updating the setting" });
+            return response;
+        }
+    }
+
+    /// <summary>
+    /// DELETE /api/settings/{id} - Delete a setting (admin)
+    /// </summary>
+    [Function("DeleteSetting")]
+    public async Task<HttpResponseData> DeleteSetting(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "settings/{id:int}")] HttpRequestData req,
+        FunctionContext context,
+        int id)
+    {
+        _logger.LogInformation("Deleting setting with ID {SettingId}", id);
+
+        try
+        {
+            var command = new DeleteSettingCommand(id);
+            await _mediator.Send(command);
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await response.WriteAsJsonAsync(new { message = "Setting deleted successfully" });
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting setting {SettingId}", id);
+            var response = req.CreateResponse(HttpStatusCode.InternalServerError);
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await response.WriteAsJsonAsync(new { error = "An error occurred while deleting the setting" });
             return response;
         }
     }

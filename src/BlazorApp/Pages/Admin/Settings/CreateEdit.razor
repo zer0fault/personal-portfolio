@@ -1,0 +1,196 @@
+@page "/admin/settings/create"
+@page "/admin/settings/edit/{id:int}"
+@layout AdminLayout
+@using Application.Settings.Commands.CreateSetting
+@using Application.Settings.Commands.UpdateSetting
+@inject ISettingsService SettingsService
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(IsEditMode ? "Edit Setting" : "Create Setting")</PageTitle>
+
+<div class="admin-page">
+    <div class="admin-page-header">
+        <div>
+            <h1 class="admin-page-title">@(IsEditMode ? "Edit Setting" : "Create Setting")</h1>
+            <p class="admin-page-subtitle">@(IsEditMode ? "Update setting configuration" : "Add a new site setting")</p>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="loading-container">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading setting...</p>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                <EditForm Model="@model" OnValidSubmit="HandleSubmit">
+                    <DataAnnotationsValidator />
+
+                    <div class="mb-3">
+                        <label class="form-label">Key <span class="text-danger">*</span></label>
+                        <InputText @bind-Value="model.Key" class="form-control" placeholder="e.g., HeroHeadline, AboutBio" />
+                        <ValidationMessage For="@(() => model.Key)" />
+                        <small class="form-text text-muted">Unique identifier for this setting</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Category <span class="text-danger">*</span></label>
+                        <InputText @bind-Value="model.Category" class="form-control" placeholder="e.g., Hero, About, Social" />
+                        <ValidationMessage For="@(() => model.Category)" />
+                        <small class="form-text text-muted">Group this setting belongs to</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Value <span class="text-danger">*</span></label>
+                        <InputTextArea @bind-Value="model.Value" class="form-control" rows="5" placeholder="Enter the setting value" />
+                        <ValidationMessage For="@(() => model.Value)" />
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-circle"></i> @errorMessage
+                        </div>
+                    }
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary" disabled="@isSaving">
+                            @if (isSaving)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                            }
+                            <i class="bi bi-check-circle"></i> @(IsEditMode ? "Update" : "Create") Setting
+                        </button>
+                        <button type="button" class="btn btn-secondary" @onclick="NavigateBack">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+
+        @if (IsEditMode)
+        {
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Common Setting Categories</h5>
+                    <ul class="mb-0">
+                        <li><strong>Hero:</strong> Homepage hero section settings (HeroHeadline, HeroSubheadline)</li>
+                        <li><strong>About:</strong> About section content (AboutBio, AboutTitle)</li>
+                        <li><strong>Social:</strong> Social media links (GitHubUrl, LinkedInUrl, TwitterUrl)</li>
+                        <li><strong>Contact:</strong> Contact information (ContactEmail, ContactPhone)</li>
+                        <li><strong>SEO:</strong> Meta tags and SEO settings (MetaDescription, Keywords)</li>
+                    </ul>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private SettingFormModel model = new();
+    private bool isLoading = false;
+    private bool isSaving = false;
+    private string? errorMessage;
+    private bool IsEditMode => Id.HasValue && Id.Value > 0;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsEditMode)
+        {
+            await LoadSetting();
+        }
+    }
+
+    private async Task LoadSetting()
+    {
+        isLoading = true;
+        var setting = await SettingsService.GetSettingByIdAsync(Id!.Value);
+        if (setting != null)
+        {
+            model = new SettingFormModel
+            {
+                Key = setting.Key,
+                Value = setting.Value,
+                Category = setting.Category
+            };
+        }
+        isLoading = false;
+    }
+
+    private async Task HandleSubmit()
+    {
+        isSaving = true;
+        errorMessage = null;
+
+        try
+        {
+            if (IsEditMode)
+            {
+                var command = new UpdateSettingCommand
+                {
+                    Id = Id!.Value,
+                    Key = model.Key,
+                    Value = model.Value,
+                    Category = model.Category
+                };
+                var success = await SettingsService.UpdateSettingAsync(Id.Value, command);
+                if (success)
+                {
+                    NavigateBack();
+                }
+                else
+                {
+                    errorMessage = "Failed to update setting. Please try again.";
+                }
+            }
+            else
+            {
+                var command = new CreateSettingCommand
+                {
+                    Key = model.Key,
+                    Value = model.Value,
+                    Category = model.Category
+                };
+                var settingId = await SettingsService.CreateSettingAsync(command);
+                if (settingId > 0)
+                {
+                    NavigateBack();
+                }
+                else
+                {
+                    errorMessage = "Failed to create setting. Please try again.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/admin/settings");
+    }
+
+    private class SettingFormModel
+    {
+        public string Key { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+    }
+}

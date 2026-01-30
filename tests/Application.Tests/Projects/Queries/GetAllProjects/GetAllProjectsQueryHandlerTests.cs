@@ -169,6 +169,6 @@ public class GetAllProjectsQueryHandlerTests : IDisposable
         public DbSet<Domain.Entities.Employment> EmploymentHistory { get; set; } = null!;
         public DbSet<ContactSubmission> ContactSubmissions { get; set; } = null!;
         public DbSet<Skill> Skills { get; set; } = null!;
-        public DbSet<Settings> Settings { get; set; } = null!;
+        public DbSet<Domain.Entities.Settings> Settings { get; set; } = null!;
     }
 }
