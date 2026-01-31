@@ -36,9 +36,4 @@ public class ContactSubmission : BaseEntity
     /// Date and time when the form was submitted (UTC)
     /// </summary>
     public DateTime SubmittedDate { get; set; }
-
-    /// <summary>
-    /// IP address of the submitter (for spam prevention)
-    /// </summary>
-    public string? IpAddress { get; set; }
 }

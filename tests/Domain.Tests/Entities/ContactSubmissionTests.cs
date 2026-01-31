@@ -18,7 +18,6 @@ public class ContactSubmissionTests
         submission.Subject.Should().BeNull();
         submission.Message.Should().BeEmpty();
         submission.IsRead.Should().BeFalse();
-        submission.IpAddress.Should().BeNull();
         submission.SubmittedDate.Should().Be(default);
     }
 
@@ -38,7 +37,6 @@ public class ContactSubmissionTests
         submission.Subject = "Job Opportunity";
         submission.Message = "I would like to discuss a position at our company.";
         submission.IsRead = false;
-        submission.IpAddress = "192.168.1.1";
         submission.SubmittedDate = submittedDate;
         submission.CreatedDate = createdDate;
         submission.ModifiedDate = modifiedDate;
@@ -50,7 +48,6 @@ public class ContactSubmissionTests
         submission.Subject.Should().Be("Job Opportunity");
         submission.Message.Should().Be("I would like to discuss a position at our company.");
         submission.IsRead.Should().BeFalse();
-        submission.IpAddress.Should().Be("192.168.1.1");
         submission.SubmittedDate.Should().Be(submittedDate);
         submission.CreatedDate.Should().Be(createdDate);
         submission.ModifiedDate.Should().Be(modifiedDate);
@@ -90,23 +87,6 @@ public class ContactSubmissionTests
 
         // Assert
         submission.IsRead.Should().BeTrue();
-    }
-
-    [Fact]
-    public void ContactSubmission_IpAddress_CanBeNull()
-    {
-        // Arrange & Act
-        var submission = new ContactSubmission
-        {
-            Name = "Anonymous",
-            Email = "anon@example.com",
-            Subject = "Question",
-            Message = "Hello",
-            IpAddress = null
-        };
-
-        // Assert
-        submission.IpAddress.Should().BeNull();
     }
 
     [Fact]
