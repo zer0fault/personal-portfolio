@@ -493,3 +493,7 @@ _pkginfo.txt
 # - No personal information
 # - Planning docs are ignored
 .azure-info.txt
+
+# Azure deployment credentials
+AZURE-SQL-SETUP.md
+test-coverage-summary.txt
