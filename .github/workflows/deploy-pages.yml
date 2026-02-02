@@ -1,8 +1,8 @@
-name: Deploy to GitHub Pages
+name: Deploy Blazor to GitHub Pages
 
 on:
   push:
-    branches: [ gh-pages ]
+    branches: [ master ]
   workflow_dispatch:
 
 permissions:
@@ -24,13 +24,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Publish Blazor App
+        run: dotnet publish src/BlazorApp/BlazorApp.csproj -c Release -o publish/blazor
+
+      - name: Update base href
+        run: sed -i 's|<base href="/" />|<base href="/personal-portfolio/" />|g' publish/blazor/wwwroot/index.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'publish/blazor/wwwroot'
 
       - name: Deploy to GitHub Pages
         id: deployment
