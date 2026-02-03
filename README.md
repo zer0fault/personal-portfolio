@@ -4,8 +4,7 @@ Professional portfolio website showcasing .NET expertise and software engineerin
 
 ## 🌐 Live Site
 
-- **Portfolio:** [Coming Soon - GitHub Pages]
-- **Admin Panel:** [Coming Soon - GitHub Pages/admin]
+- **Portfolio:** https://zer0fault.github.io/personal-portfolio/
 
 ## 🚀 Tech Stack
 
@@ -103,9 +102,9 @@ Personal Portfolio/
 │   ├── Application.Tests/
 │   ├── Infrastructure.Tests/
 │   └── Functions.API.Tests/
+├── CLAUDE.md
 ├── .gitignore
 ├── README.md
-├── SECURITY.md
 └── PortfolioWebsite.sln
 ```
 
