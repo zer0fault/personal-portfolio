@@ -78,8 +78,6 @@ Professional portfolio website showcasing .NET expertise and software engineerin
 
 ## 🔒 Security
 
-See [SECURITY.md](./SECURITY.md) for detailed security guidelines.
-
 **Key Points:**
 - No secrets in source code (Azure App Settings & GitHub Secrets)
 - HTTPS enforced for all communications
