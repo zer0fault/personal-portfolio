@@ -61,18 +61,18 @@ public class AuthFunctions
                 return badRequestResponse;
             }
 
-            // Get credentials from configuration with explicit defaults
-            var adminUsername = "admin";
-            var adminPassword = "admin123"; // TODO: Change this or use environment variables!
+            // Get credentials from configuration (required)
+            var adminUsername = _configuration["AdminUsername"];
+            var adminPassword = _configuration["AdminPassword"];
 
-            // Try to get from configuration if available
-            var configUsername = _configuration["AdminUsername"];
-            var configPassword = _configuration["AdminPassword"];
-
-            if (!string.IsNullOrEmpty(configUsername))
-                adminUsername = configUsername;
-            if (!string.IsNullOrEmpty(configPassword))
-                adminPassword = configPassword;
+            if (string.IsNullOrEmpty(adminUsername) || string.IsNullOrEmpty(adminPassword))
+            {
+                _logger.LogError("Admin credentials not configured");
+                var serverErrorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                serverErrorResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+                await serverErrorResponse.WriteAsJsonAsync(new { error = "Server configuration error" });
+                return serverErrorResponse;
+            }
 
             _logger.LogInformation($"Login attempt for user: {loginRequest.Username}");
 
@@ -108,7 +108,14 @@ public class AuthFunctions
 
     private string GenerateJwtToken(string username)
     {
-        var jwtSecret = _configuration["JwtSecret"] ?? "YourSuperSecretKeyForJWTTokenGeneration123!";
+        var jwtSecret = _configuration["JwtSecret"];
+
+        if (string.IsNullOrEmpty(jwtSecret))
+        {
+            _logger.LogError("JWT secret not configured");
+            throw new InvalidOperationException("JWT secret not configured");
+        }
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

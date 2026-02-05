@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "AdminUsername": "your-admin-username",
+    "AdminPassword": "your-secure-password",
+    "JwtSecret": "your-jwt-secret-key-min-32-characters-long"
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=portfolio.db"
+  }
+}
