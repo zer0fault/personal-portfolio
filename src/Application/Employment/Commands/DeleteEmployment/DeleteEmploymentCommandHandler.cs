@@ -1,6 +1,4 @@
-using Application.Common.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Employment.Commands.DeleteEmployment;
 
@@ -9,29 +7,12 @@ namespace Application.Employment.Commands.DeleteEmployment;
 /// </summary>
 public class DeleteEmploymentCommandHandler : IRequestHandler<DeleteEmploymentCommand, bool>
 {
-    private readonly IApplicationDbContext _context;
-
-    public DeleteEmploymentCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<bool> Handle(DeleteEmploymentCommand request, CancellationToken cancellationToken)
     {
-        var employment = await _context.EmploymentHistory
-            .FirstOrDefaultAsync(e => e.Id == request.Id && !e.IsDeleted, cancellationToken);
+        // Note: Data is hardcoded - this command does not persist changes
 
-        if (employment == null)
-        {
-            throw new KeyNotFoundException("Employment entry not found");
-        }
-
-        // Soft delete
-        employment.IsDeleted = true;
-        employment.ModifiedDate = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync(cancellationToken);
-
+        // Return success for API compatibility
+        await Task.CompletedTask;
         return true;
     }
 }

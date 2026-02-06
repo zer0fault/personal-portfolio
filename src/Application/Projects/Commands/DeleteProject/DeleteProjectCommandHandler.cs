@@ -1,6 +1,4 @@
-using Application.Common.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Projects.Commands.DeleteProject;
 
@@ -9,29 +7,12 @@ namespace Application.Projects.Commands.DeleteProject;
 /// </summary>
 public class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand, bool>
 {
-    private readonly IApplicationDbContext _context;
-
-    public DeleteProjectCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<bool> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
-        var project = await _context.Projects
-            .FirstOrDefaultAsync(p => p.Id == request.Id && !p.IsDeleted, cancellationToken);
+        // Note: Data is hardcoded - this command does not persist changes
 
-        if (project == null)
-        {
-            throw new KeyNotFoundException("Project not found");
-        }
-
-        // Soft delete
-        project.IsDeleted = true;
-        project.ModifiedDate = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync(cancellationToken);
-
+        // Return success for API compatibility
+        await Task.CompletedTask;
         return true;
     }
 }

@@ -1,7 +1,4 @@
-using Application.Common.Interfaces;
-using Domain.Entities;
 using MediatR;
-using System.Text.Json;
 
 namespace Application.Projects.Commands.CreateProject;
 
@@ -10,15 +7,10 @@ namespace Application.Projects.Commands.CreateProject;
 /// </summary>
 public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateProjectCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(CreateProjectCommand request, CancellationToken cancellationToken)
     {
+        // Note: Data is hardcoded - this command does not persist changes
+
         // Validate required fields
         if (string.IsNullOrWhiteSpace(request.Title))
         {
@@ -35,24 +27,8 @@ public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand,
             throw new ArgumentException("Full description is required");
         }
 
-        // Create the project entity
-        var project = new Project
-        {
-            Title = request.Title,
-            ShortDescription = request.ShortDescription,
-            FullDescription = request.FullDescription,
-            Technologies = JsonSerializer.Serialize(request.Technologies),
-            GitHubUrl = request.GitHubUrl,
-            LiveDemoUrl = request.LiveDemoUrl,
-            DisplayOrder = request.DisplayOrder,
-            Status = request.Status,
-            CreatedDate = DateTime.UtcNow,
-            ModifiedDate = DateTime.UtcNow
-        };
-
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return project.Id;
+        // Return fake ID for API compatibility
+        await Task.CompletedTask;
+        return 999;
     }
 }

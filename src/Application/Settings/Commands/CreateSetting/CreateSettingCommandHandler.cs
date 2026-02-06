@@ -1,4 +1,3 @@
-using Application.Common.Interfaces;
 using MediatR;
 
 namespace Application.Settings.Commands.CreateSetting;
@@ -8,29 +7,12 @@ namespace Application.Settings.Commands.CreateSetting;
 /// </summary>
 public class CreateSettingCommandHandler : IRequestHandler<CreateSettingCommand, int>
 {
-    private readonly IApplicationDbContext _context;
-
-    public CreateSettingCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<int> Handle(CreateSettingCommand request, CancellationToken cancellationToken)
     {
-        var setting = new Domain.Entities.Settings
-        {
-            Key = request.Key,
-            Value = request.Value,
-            Category = request.Category,
-            LastModified = DateTime.UtcNow,
-            CreatedDate = DateTime.UtcNow,
-            ModifiedDate = DateTime.UtcNow,
-            IsDeleted = false
-        };
+        // Note: Data is hardcoded - this command does not persist changes
 
-        _context.Settings.Add(setting);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return setting.Id;
+        // Return fake ID for API compatibility
+        await Task.CompletedTask;
+        return 999;
     }
 }

@@ -1,6 +1,4 @@
-using Application.Common.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Contact.Commands.MarkContactAsRead;
 
@@ -9,28 +7,12 @@ namespace Application.Contact.Commands.MarkContactAsRead;
 /// </summary>
 public class MarkContactAsReadCommandHandler : IRequestHandler<MarkContactAsReadCommand, bool>
 {
-    private readonly IApplicationDbContext _context;
-
-    public MarkContactAsReadCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<bool> Handle(MarkContactAsReadCommand request, CancellationToken cancellationToken)
     {
-        var submission = await _context.ContactSubmissions
-            .FirstOrDefaultAsync(c => c.Id == request.Id, cancellationToken);
+        // Note: Data is hardcoded - this command does not persist changes
 
-        if (submission == null)
-        {
-            throw new KeyNotFoundException("Contact submission not found");
-        }
-
-        submission.IsRead = request.IsRead;
-        submission.ModifiedDate = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync(cancellationToken);
-
+        // Return success for API compatibility
+        await Task.CompletedTask;
         return true;
     }
 }

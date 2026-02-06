@@ -1,8 +1,7 @@
-using Application.Common.Interfaces;
+using Application.Common.Data;
 using Application.Projects.Queries.DTOs;
 using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Projects.Queries.GetProjectByIdForAdmin;
 
@@ -11,22 +10,18 @@ namespace Application.Projects.Queries.GetProjectByIdForAdmin;
 /// </summary>
 public class GetProjectByIdForAdminQueryHandler : IRequestHandler<GetProjectByIdForAdminQuery, ProjectDetailDto?>
 {
-    private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetProjectByIdForAdminQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetProjectByIdForAdminQueryHandler(IMapper mapper)
     {
-        _context = context;
         _mapper = mapper;
     }
 
     public async Task<ProjectDetailDto?> Handle(GetProjectByIdForAdminQuery request, CancellationToken cancellationToken)
     {
-        var project = await _context.Projects
-            .Include(p => p.Images)
-            .Where(p => p.Id == request.Id && !p.IsDeleted)
-            .FirstOrDefaultAsync(cancellationToken);
+        var project = StaticDataProvider.GetProjects()
+            .FirstOrDefault(p => p.Id == request.Id && !p.IsDeleted);
 
-        return project == null ? null : _mapper.Map<ProjectDetailDto>(project);
+        return await Task.FromResult(project == null ? null : _mapper.Map<ProjectDetailDto>(project));
     }
 }

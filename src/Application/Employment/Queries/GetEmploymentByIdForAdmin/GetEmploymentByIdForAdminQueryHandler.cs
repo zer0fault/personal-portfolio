@@ -1,8 +1,7 @@
-using Application.Common.Interfaces;
+using Application.Common.Data;
 using Application.Employment.Queries.DTOs;
 using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Employment.Queries.GetEmploymentByIdForAdmin;
 
@@ -11,21 +10,18 @@ namespace Application.Employment.Queries.GetEmploymentByIdForAdmin;
 /// </summary>
 public class GetEmploymentByIdForAdminQueryHandler : IRequestHandler<GetEmploymentByIdForAdminQuery, EmploymentDto?>
 {
-    private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetEmploymentByIdForAdminQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetEmploymentByIdForAdminQueryHandler(IMapper mapper)
     {
-        _context = context;
         _mapper = mapper;
     }
 
     public async Task<EmploymentDto?> Handle(GetEmploymentByIdForAdminQuery request, CancellationToken cancellationToken)
     {
-        var employment = await _context.EmploymentHistory
-            .Where(e => e.Id == request.Id && !e.IsDeleted)
-            .FirstOrDefaultAsync(cancellationToken);
+        var employment = StaticDataProvider.GetEmployment()
+            .FirstOrDefault(e => e.Id == request.Id && !e.IsDeleted);
 
-        return employment == null ? null : _mapper.Map<EmploymentDto>(employment);
+        return await Task.FromResult(employment == null ? null : _mapper.Map<EmploymentDto>(employment));
     }
 }

@@ -1,6 +1,4 @@
-using Application.Common.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Settings.Commands.DeleteSetting;
 
@@ -9,30 +7,12 @@ namespace Application.Settings.Commands.DeleteSetting;
 /// </summary>
 public class DeleteSettingCommandHandler : IRequestHandler<DeleteSettingCommand, Unit>
 {
-    private readonly IApplicationDbContext _context;
-
-    public DeleteSettingCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Unit> Handle(DeleteSettingCommand request, CancellationToken cancellationToken)
     {
-        var setting = await _context.Settings
-            .Where(s => !s.IsDeleted)
-            .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
+        // Note: Data is hardcoded - this command does not persist changes
 
-        if (setting == null)
-        {
-            throw new KeyNotFoundException($"Setting with ID {request.Id} not found");
-        }
-
-        // Soft delete
-        setting.IsDeleted = true;
-        setting.ModifiedDate = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync(cancellationToken);
-
+        // Return success for API compatibility
+        await Task.CompletedTask;
         return Unit.Value;
     }
 }

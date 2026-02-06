@@ -1,9 +1,7 @@
-using Application.Common.Interfaces;
+using Application.Common.Data;
 using Application.Skills.Queries.DTOs;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Skills.Queries.GetAllSkills;
 
@@ -12,21 +10,20 @@ namespace Application.Skills.Queries.GetAllSkills;
 /// </summary>
 public class GetAllSkillsQueryHandler : IRequestHandler<GetAllSkillsQuery, List<SkillDto>>
 {
-    private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetAllSkillsQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetAllSkillsQueryHandler(IMapper mapper)
     {
-        _context = context;
         _mapper = mapper;
     }
 
     public async Task<List<SkillDto>> Handle(GetAllSkillsQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Skills
+        var skills = StaticDataProvider.GetSkills()
             .OrderBy(s => s.Category)
             .ThenBy(s => s.DisplayOrder)
-            .ProjectTo<SkillDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
+            .ToList();
+
+        return await Task.FromResult(_mapper.Map<List<SkillDto>>(skills));
     }
 }
