@@ -18,9 +18,10 @@ builder.Services.AddAutoMapper(typeof(Application.Common.Mappings.MappingProfile
 builder.Services.AddScoped<IProjectsService, StaticProjectsService>();
 builder.Services.AddScoped<IEmploymentService, StaticEmploymentService>();
 builder.Services.AddScoped<ISkillsService, StaticSkillsService>();
-builder.Services.AddScoped<IContactService, StaticContactService>();
 builder.Services.AddScoped<ISettingsService, StaticSettingsService>();
 builder.Services.AddScoped<ThemeService>();
 builder.Services.AddScoped<AuthService>();
+
+// Note: Contact service removed - no contact form in static mode
 
 await builder.Build().RunAsync();

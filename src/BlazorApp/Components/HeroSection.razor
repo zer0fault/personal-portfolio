@@ -13,7 +13,12 @@
                 <h2 class="hero-subtitle">@title</h2>
                 <p class="hero-tagline">@tagline</p>
                 <div class="hero-cta">
-                    <a href="#contact" class="btn btn-primary btn-lg">@ctaText</a>
+                    @if (!string.IsNullOrEmpty(linkedInUrl))
+                    {
+                        <a href="@linkedInUrl" class="btn btn-primary btn-lg" target="_blank">
+                            <i class="bi bi-linkedin"></i> Connect on LinkedIn
+                        </a>
+                    }
                     @if (!string.IsNullOrEmpty(githubUrl))
                     {
                         <a href="@githubUrl" class="btn btn-outline-light btn-lg ms-3" target="_blank">
@@ -31,8 +36,8 @@
     private string name = string.Empty;
     private string title = string.Empty;
     private string tagline = string.Empty;
-    private string ctaText = "Get In Touch";
     private string githubUrl = string.Empty;
+    private string linkedInUrl = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,8 +48,8 @@
             name = settings.FirstOrDefault(s => s.Key == "Name")?.Value ?? "Austin Little";
             title = settings.FirstOrDefault(s => s.Key == "Title")?.Value ?? "Software Engineer";
             tagline = settings.FirstOrDefault(s => s.Key == "Tagline")?.Value ?? "Building innovative solutions with .NET and modern web technologies";
-            ctaText = settings.FirstOrDefault(s => s.Key == "CTAText")?.Value ?? "Get In Touch";
             githubUrl = settings.FirstOrDefault(s => s.Key == "GitHubUrl")?.Value ?? string.Empty;
+            linkedInUrl = settings.FirstOrDefault(s => s.Key == "LinkedInUrl")?.Value ?? string.Empty;
         }
         catch (Exception ex)
         {
