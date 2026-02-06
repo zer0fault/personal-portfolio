@@ -4,15 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal portfolio website built with .NET 9, following Clean Architecture principles. Uses Blazor WebAssembly frontend hosted on GitHub Pages, Azure Functions for serverless backend API, and Azure SQL Database for persistence.
+Personal portfolio website built with .NET 9, following Clean Architecture principles. **Fully static site** hosted on GitHub Pages with embedded data - **zero runtime costs**.
 
 **Tech Stack:**
 - .NET 9 / C# 13
-- Blazor WebAssembly (frontend)
-- Azure Functions .NET Isolated (backend)
-- Entity Framework Core 9 with Code First migrations
-- MediatR (CQRS pattern)
-- FluentValidation
+- Blazor WebAssembly (frontend) - fully static
+- AutoMapper (entity-to-DTO mapping)
+- Static data provider (no database or API)
 - xUnit + Moq (testing)
 
 ## Project Structure
@@ -26,39 +24,31 @@ Domain → Application → Infrastructure → Functions.API
 
 **Layer Responsibilities:**
 - **Domain** (`src/Domain/`): Core entities (`Project`, `Employment`, `Skill`, `Settings`, `ContactSubmission`), enums, base classes. No external dependencies.
-- **Application** (`src/Application/`): CQRS handlers via MediatR, DTOs, validators (FluentValidation), interfaces. Depends only on Domain.
-- **Infrastructure** (`src/Infrastructure/`): EF Core `ApplicationDbContext`, `Repository<T>`, configurations, migrations, `DatabaseSeeder`. Implements Application interfaces.
-- **Functions.API** (`src/Functions.API/`): Azure Functions HTTP triggers. Thin wrappers around MediatR handlers.
-- **BlazorApp** (`src/BlazorApp/`): Blazor WASM frontend with services calling Functions.API.
+- **Application** (`src/Application/`): DTOs, AutoMapper profiles, `StaticDataProvider` with hardcoded data. Depends only on Domain.
+- **BlazorApp** (`src/BlazorApp/`): Blazor WASM frontend with static data services. **No API calls** - all data embedded via `StaticDataProvider`.
+
+**Legacy (not used in static mode):**
+- **Infrastructure** (`src/Infrastructure/`): EF Core configurations (kept for historical reference)
+- **Functions.API** (`src/Functions.API/`): Azure Functions (disabled, not deployed)
 
 ## Common Development Commands
 
 ### Build
 ```bash
-dotnet build
+dotnet build src/BlazorApp/BlazorApp.csproj
 ```
 
 ### Run Locally
 ```bash
-# Run Azure Functions (API backend)
-cd src/Functions.API
-func start
-
-# Run Blazor app (frontend) - in separate terminal
+# Run Blazor app (fully static, no backend needed)
 cd src/BlazorApp
 dotnet run
 ```
 
-### Database Migrations
+### Publish for Production
 ```bash
-# Add new migration (run from repository root)
-dotnet ef migrations add MigrationName --project src/Infrastructure --startup-project src/Functions.API
-
-# Apply migrations (happens automatically on Functions startup, but manual command is)
-dotnet ef database update --project src/Infrastructure --startup-project src/Functions.API
-
-# Remove last migration (if not applied)
-dotnet ef migrations remove --project src/Infrastructure --startup-project src/Functions.API
+# Build optimized production bundle
+dotnet publish src/BlazorApp/BlazorApp.csproj -c Release -o publish/blazor
 ```
 
 ### Testing
@@ -238,11 +228,12 @@ See `SECURITY.md` and `COMMIT-GUIDE.md` for detailed security practices.
 
 ## Deployment
 
-**Frontend (Blazor):** GitHub Pages
-**Backend (Functions):** Azure Functions Consumption Plan
-**Database:** Azure SQL Database (or SQLite locally)
+**Hosting:** GitHub Pages (fully static)
+**Cost:** $0/month (no runtime costs, no database, no cloud services)
 
-Deployment uses GitHub Actions. Secrets stored as GitHub Secrets, not in code.
+Deployment uses GitHub Actions workflow `deploy-pages.yml`. Automatically deploys on push to `master` branch.
+
+**Note:** Azure Functions deployment workflow has been disabled (`deploy-functions.yml.disabled`).
 
 ## Adding New Features
 
