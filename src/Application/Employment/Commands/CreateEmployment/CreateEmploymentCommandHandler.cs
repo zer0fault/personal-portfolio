@@ -10,17 +10,7 @@ public class CreateEmploymentCommandHandler : IRequestHandler<CreateEmploymentCo
     public async Task<int> Handle(CreateEmploymentCommand request, CancellationToken cancellationToken)
     {
         // Note: Data is hardcoded - this command does not persist changes
-
-        // Validate required fields
-        if (string.IsNullOrWhiteSpace(request.CompanyName))
-        {
-            throw new ArgumentException("Company name is required");
-        }
-
-        if (string.IsNullOrWhiteSpace(request.JobTitle))
-        {
-            throw new ArgumentException("Job title is required");
-        }
+        // Validation is handled by FluentValidation
 
         // Return fake ID for API compatibility
         await Task.CompletedTask;

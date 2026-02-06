@@ -24,7 +24,7 @@ public class GetSettingByIdQueryHandler : IRequestHandler<GetSettingByIdQuery, S
 
         if (setting == null)
         {
-            throw new KeyNotFoundException($"Setting with ID {request.Id} not found");
+            return await Task.FromResult<SettingsDto>(null!);
         }
 
         return await Task.FromResult(_mapper.Map<SettingsDto>(setting));
