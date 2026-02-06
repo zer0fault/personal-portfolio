@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zer0fault.github.io/personal-portfolio/sitemap.xml
