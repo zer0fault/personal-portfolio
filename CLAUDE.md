@@ -171,14 +171,12 @@ Entities like `Project`, `Employment`, `Skill` have `DisplayOrder` for sorting. 
 
 ## Testing Strategy
 
-**Test Coverage: 279 tests across 4 projects**
+**Test Coverage: 173 tests across 2 projects**
 
 - **Domain.Tests** (39 tests): Entity validation, business rules
-- **Application.Tests** (218 tests): All command/query handlers, validators
-- **Infrastructure.Tests** (13 tests): Repository operations, configurations
-- **Functions.API.IntegrationTests** (9 tests): Database operations, seeding
+- **Application.Tests** (134 tests): Command/query handlers, validators
 
-**Philosophy:** Unit test all handlers and validators. Integration tests focus on critical database operations. API functions are thin wrappers, so no separate API tests.
+**Philosophy:** Unit test all handlers and validators. Tests validate business logic and data transformation independent of persistence layer. Command handlers perform validation only (no persistence in static architecture).
 
 ## Database Connection
 
