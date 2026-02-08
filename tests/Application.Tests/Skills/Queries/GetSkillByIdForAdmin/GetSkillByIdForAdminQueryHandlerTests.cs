@@ -1,8 +1,5 @@
-using Application.Common.Data;
-using Application.Common.Mappings;
 using Application.Skills.Queries.DTOs;
 using Application.Skills.Queries.GetSkillByIdForAdmin;
-using AutoMapper;
 using Domain.Enums;
 using FluentAssertions;
 using Xunit;
@@ -11,19 +8,11 @@ namespace Application.Tests.Skills.Queries.GetSkillByIdForAdmin;
 
 public class GetSkillByIdForAdminQueryHandlerTests
 {
-    private readonly IMapper _mapper;
     private readonly GetSkillByIdForAdminQueryHandler _handler;
 
     public GetSkillByIdForAdminQueryHandlerTests()
     {
-        // Use the actual MappingProfile
-        var configuration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<MappingProfile>();
-        });
-        _mapper = configuration.CreateMapper();
-
-        _handler = new GetSkillByIdForAdminQueryHandler(_mapper);
+        _handler = new GetSkillByIdForAdminQueryHandler();
     }
 
     [Fact]
@@ -59,20 +48,26 @@ public class GetSkillByIdForAdminQueryHandlerTests
     public async Task Handle_Should_Return_Skill_For_Different_Categories()
     {
         // Arrange & Act
+        // ID 1 = C# (Language), ID 8 = .NET Framework (Framework), ID 14 = Microsoft Azure (Cloud)
         var languageResult = await _handler.Handle(new GetSkillByIdForAdminQuery(1), CancellationToken.None);
-        var frameworkResult = await _handler.Handle(new GetSkillByIdForAdminQuery(3), CancellationToken.None);
-        var cloudResult = await _handler.Handle(new GetSkillByIdForAdminQuery(5), CancellationToken.None);
+        var frameworkResult = await _handler.Handle(new GetSkillByIdForAdminQuery(8), CancellationToken.None);
+        var cloudResult = await _handler.Handle(new GetSkillByIdForAdminQuery(14), CancellationToken.None);
 
         // Assert
         languageResult!.Category.Should().Be(SkillCategory.Language);
+        languageResult.Name.Should().Be("C#");
+
         frameworkResult!.Category.Should().Be(SkillCategory.Framework);
+        frameworkResult.Name.Should().Be(".NET Framework");
+
         cloudResult!.Category.Should().Be(SkillCategory.Cloud);
+        cloudResult.Name.Should().Be("Microsoft Azure");
     }
 
     [Fact]
     public async Task Handle_Should_Map_All_Properties_Correctly()
     {
-        // Arrange - StaticDataProvider has skill with Id = 3 (ASP.NET Core)
+        // Arrange - ID 3 is TypeScript (Language category, display order 3)
         var query = new GetSkillByIdForAdminQuery(3);
 
         // Act
@@ -81,8 +76,8 @@ public class GetSkillByIdForAdminQueryHandlerTests
         // Assert
         result.Should().NotBeNull();
         result!.Id.Should().Be(3);
-        result.Name.Should().Be("ASP.NET Core");
-        result.Category.Should().Be(SkillCategory.Framework);
-        result.DisplayOrder.Should().Be(1);
+        result.Name.Should().Be("TypeScript");
+        result.Category.Should().Be(SkillCategory.Language);
+        result.DisplayOrder.Should().Be(3);
     }
 }

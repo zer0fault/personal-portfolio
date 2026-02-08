@@ -1,8 +1,5 @@
-using Application.Common.Data;
-using Application.Common.Mappings;
 using Application.Skills.Queries.DTOs;
 using Application.Skills.Queries.GetAllSkills;
-using AutoMapper;
 using Domain.Enums;
 using FluentAssertions;
 using Xunit;
@@ -11,19 +8,11 @@ namespace Application.Tests.Skills.Queries.GetAllSkills;
 
 public class GetAllSkillsQueryHandlerTests
 {
-    private readonly IMapper _mapper;
     private readonly GetAllSkillsQueryHandler _handler;
 
     public GetAllSkillsQueryHandlerTests()
     {
-        // Use the actual MappingProfile
-        var configuration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<MappingProfile>();
-        });
-        _mapper = configuration.CreateMapper();
-
-        _handler = new GetAllSkillsQueryHandler(_mapper);
+        _handler = new GetAllSkillsQueryHandler();
     }
 
     [Fact]
@@ -37,7 +26,7 @@ public class GetAllSkillsQueryHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(7); // StaticDataProvider has 7 skills
+        result.Should().HaveCount(32); // StaticDataProvider has 32 skills across all categories
     }
 
     [Fact]
@@ -51,16 +40,28 @@ public class GetAllSkillsQueryHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(7);
+        result.Should().HaveCount(32);
 
         // Verify ordering: Language(0) < Framework(1) < Cloud(2) < Architecture(3) < Practice(4)
+        // First skills should be from Language category
         result[0].Category.Should().Be(SkillCategory.Language);
-        result[1].Category.Should().Be(SkillCategory.Language);
-        result[2].Category.Should().Be(SkillCategory.Framework);
-        result[3].Category.Should().Be(SkillCategory.Framework);
-        result[4].Category.Should().Be(SkillCategory.Cloud);
-        result[5].Category.Should().Be(SkillCategory.Architecture);
-        result[6].Category.Should().Be(SkillCategory.Practice);
+        result[0].Name.Should().Be("C#");
+        result[0].DisplayOrder.Should().Be(1);
+
+        // Language category has 7 skills, so Framework starts at index 7
+        result[7].Category.Should().Be(SkillCategory.Framework);
+        result[7].Name.Should().Be(".NET Framework");
+        result[7].DisplayOrder.Should().Be(1);
+
+        // Categories should be ordered: Language -> Framework -> Cloud -> Architecture -> Practice
+        var categories = result.Select(s => s.Category).Distinct().ToList();
+        categories.Should().ContainInOrder(
+            SkillCategory.Language,
+            SkillCategory.Framework,
+            SkillCategory.Cloud,
+            SkillCategory.Architecture,
+            SkillCategory.Practice
+        );
     }
 
     [Fact]
@@ -76,9 +77,9 @@ public class GetAllSkillsQueryHandlerTests
         result.Should().NotBeNull();
         result.Should().Contain(s => s.Name == "C#");
         result.Should().Contain(s => s.Name == "JavaScript");
-        result.Should().Contain(s => s.Name == "ASP.NET Core");
+        result.Should().Contain(s => s.Name == "ASP.NET");
         result.Should().Contain(s => s.Name == "Blazor");
-        result.Should().Contain(s => s.Name == "Azure");
+        result.Should().Contain(s => s.Name == "Microsoft Azure");
         result.Should().Contain(s => s.Name == "Clean Architecture");
         result.Should().Contain(s => s.Name == "Unit Testing");
     }
