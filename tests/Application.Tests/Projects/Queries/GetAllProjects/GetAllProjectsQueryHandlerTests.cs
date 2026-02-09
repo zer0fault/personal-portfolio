@@ -1,8 +1,6 @@
 using Application.Common.Data;
-using Application.Common.Mappings;
 using Application.Projects.Queries.DTOs;
 using Application.Projects.Queries.GetAllProjects;
-using AutoMapper;
 using Domain.Enums;
 using FluentAssertions;
 using Xunit;
@@ -11,19 +9,11 @@ namespace Application.Tests.Projects.Queries.GetAllProjects;
 
 public class GetAllProjectsQueryHandlerTests
 {
-    private readonly IMapper _mapper;
     private readonly GetAllProjectsQueryHandler _handler;
 
     public GetAllProjectsQueryHandlerTests()
     {
-        // Use the actual MappingProfile
-        var configuration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<MappingProfile>();
-        });
-        _mapper = configuration.CreateMapper();
-
-        _handler = new GetAllProjectsQueryHandler(_mapper);
+        _handler = new GetAllProjectsQueryHandler();
     }
 
     [Fact]

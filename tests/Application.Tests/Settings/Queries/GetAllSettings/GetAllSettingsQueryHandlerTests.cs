@@ -1,8 +1,6 @@
 using Application.Common.Data;
-using Application.Common.Mappings;
 using Application.Settings.Queries.DTOs;
 using Application.Settings.Queries.GetAllSettings;
-using AutoMapper;
 using FluentAssertions;
 using Xunit;
 
@@ -10,17 +8,11 @@ namespace Application.Tests.Settings.Queries.GetAllSettings;
 
 public class GetAllSettingsQueryHandlerTests
 {
-    private readonly IMapper _mapper;
     private readonly GetAllSettingsQueryHandler _handler;
 
     public GetAllSettingsQueryHandlerTests()
     {
-        var configuration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<MappingProfile>();
-        });
-        _mapper = configuration.CreateMapper();
-        _handler = new GetAllSettingsQueryHandler(_mapper);
+        _handler = new GetAllSettingsQueryHandler();
     }
 
     [Fact]
@@ -49,6 +41,6 @@ public class GetAllSettingsQueryHandlerTests
         // Assert
         result.Should().NotBeNull();
         var categories = result.Select(s => s.Category).ToList();
-        categories.Should().ContainInConsecutiveOrder("About", "Hero");
+        categories.Should().ContainInConsecutiveOrder("Hero", "About");
     }
 }

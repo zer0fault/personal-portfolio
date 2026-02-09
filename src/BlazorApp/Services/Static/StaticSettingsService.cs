@@ -7,53 +7,48 @@ public class StaticSettingsService : ISettingsService
 {
     public Task<List<SettingsDto>> GetAllSettingsAsync()
     {
-        var settings = StaticDataProvider.GetSettings()
-            .Where(s => !s.IsDeleted)
-            .Select(s => new SettingsDto
+        var settings = new List<SettingsDto>();
+        var currentId = 1;
+
+        foreach (var (key, value) in StaticDataProvider.GetHeroSettings())
+        {
+            settings.Add(new SettingsDto
             {
-                Id = s.Id,
-                Key = s.Key,
-                Value = s.Value,
-                Category = s.Category
-            })
-            .ToList();
+                Id = currentId++,
+                Key = key,
+                Value = value,
+                Category = "Hero",
+                LastModified = DateTime.UtcNow
+            });
+        }
+
+        foreach (var (key, value) in StaticDataProvider.GetAboutSettings())
+        {
+            settings.Add(new SettingsDto
+            {
+                Id = currentId++,
+                Key = key,
+                Value = value,
+                Category = "About",
+                LastModified = DateTime.UtcNow
+            });
+        }
 
         return Task.FromResult(settings);
     }
 
     public Task<List<SettingsDto>> GetSettingsByCategoryAsync(string category)
     {
-        var settings = StaticDataProvider.GetSettings()
-            .Where(s => !s.IsDeleted && s.Category == category)
-            .Select(s => new SettingsDto
-            {
-                Id = s.Id,
-                Key = s.Key,
-                Value = s.Value,
-                Category = s.Category
-            })
-            .ToList();
-
-        return Task.FromResult(settings);
+        var allSettings = GetAllSettingsAsync().Result;
+        var filtered = allSettings.Where(s => s.Category == category).ToList();
+        return Task.FromResult(filtered);
     }
 
     public Task<SettingsDto?> GetSettingByIdAsync(int id)
     {
-        var setting = StaticDataProvider.GetSettings()
-            .FirstOrDefault(s => s.Id == id && !s.IsDeleted);
-
-        if (setting == null)
-            return Task.FromResult<SettingsDto?>(null);
-
-        var dto = new SettingsDto
-        {
-            Id = setting.Id,
-            Key = setting.Key,
-            Value = setting.Value,
-            Category = setting.Category
-        };
-
-        return Task.FromResult<SettingsDto?>(dto);
+        var allSettings = GetAllSettingsAsync().Result;
+        var setting = allSettings.FirstOrDefault(s => s.Id == id);
+        return Task.FromResult(setting);
     }
 
     // Admin methods - not supported in static mode

@@ -1,6 +1,5 @@
 using Application.Common.Data;
 using Application.Projects.Queries.DTOs;
-using AutoMapper;
 using Domain.Enums;
 using MediatR;
 
@@ -11,18 +10,28 @@ namespace Application.Projects.Queries.GetProjectById;
 /// </summary>
 public class GetProjectByIdQueryHandler : IRequestHandler<GetProjectByIdQuery, ProjectDetailDto?>
 {
-    private readonly IMapper _mapper;
-
-    public GetProjectByIdQueryHandler(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
-
     public async Task<ProjectDetailDto?> Handle(GetProjectByIdQuery request, CancellationToken cancellationToken)
     {
-        var project = StaticDataProvider.GetProjects()
-            .FirstOrDefault(p => p.Id == request.Id && !p.IsDeleted && p.Status == ProjectStatus.Published);
+        var projects = StaticDataProvider.GetProjectsData();
 
-        return await Task.FromResult(project == null ? null : _mapper.Map<ProjectDetailDto>(project));
+        if (request.Id < 1 || request.Id > projects.Count)
+            return await Task.FromResult<ProjectDetailDto?>(null);
+
+        var project = projects[request.Id - 1];
+
+        var dto = new ProjectDetailDto
+        {
+            Id = request.Id,
+            Title = project.Title,
+            ShortDescription = project.ShortDescription,
+            FullDescription = project.FullDescription,
+            Technologies = project.Technologies,
+            GitHubUrl = project.GitHubUrl,
+            LiveDemoUrl = project.LiveDemoUrl,
+            Status = ProjectStatus.Published,
+            Images = new()
+        };
+
+        return await Task.FromResult<ProjectDetailDto?>(dto);
     }
 }

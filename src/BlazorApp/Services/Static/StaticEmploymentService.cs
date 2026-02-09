@@ -1,38 +1,40 @@
 using Application.Common.Data;
 using Application.Employment.Queries.DTOs;
-using AutoMapper;
 
 namespace BlazorApp.Services.Static;
 
 public class StaticEmploymentService : IEmploymentService
 {
-    private readonly IMapper _mapper;
-
-    public StaticEmploymentService(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
-
     public Task<List<EmploymentDto>> GetAllEmploymentAsync()
     {
-        var employment = StaticDataProvider.GetEmployment()
-            .Where(e => !e.IsDeleted)
-            .OrderBy(e => e.DisplayOrder)
-            .ToList();
+        var employmentData = StaticDataProvider.GetEmploymentData();
+        var dtos = new List<EmploymentDto>();
+        var currentId = 1;
 
-        return Task.FromResult(_mapper.Map<List<EmploymentDto>>(employment));
+        foreach (var emp in employmentData)
+        {
+            dtos.Add(new EmploymentDto
+            {
+                Id = currentId++,
+                CompanyName = emp.CompanyName,
+                JobTitle = emp.JobTitle,
+                StartDate = emp.StartDate,
+                EndDate = emp.EndDate,
+                Responsibilities = emp.Responsibilities,
+                Achievements = emp.Achievements,
+                Technologies = emp.Technologies,
+                DisplayOrder = currentId - 1
+            });
+        }
+
+        return Task.FromResult(dtos);
     }
-
 
     public Task<EmploymentDto?> GetEmploymentByIdAsync(int id)
     {
-        var employment = StaticDataProvider.GetEmployment()
-            .FirstOrDefault(e => e.Id == id && !e.IsDeleted);
-
-        if (employment == null)
-            return Task.FromResult<EmploymentDto?>(null);
-
-        return Task.FromResult<EmploymentDto?>(_mapper.Map<EmploymentDto>(employment));
+        var allEmployment = GetAllEmploymentAsync().Result;
+        var employment = allEmployment.FirstOrDefault(e => e.Id == id);
+        return Task.FromResult(employment);
     }
 
     // Admin methods - not supported in static mode

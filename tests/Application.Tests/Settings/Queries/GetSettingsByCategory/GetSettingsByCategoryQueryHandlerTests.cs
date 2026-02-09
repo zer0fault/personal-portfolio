@@ -1,8 +1,6 @@
 using Application.Common.Data;
-using Application.Common.Mappings;
 using Application.Settings.Queries.DTOs;
 using Application.Settings.Queries.GetSettingsByCategory;
-using AutoMapper;
 using FluentAssertions;
 using Xunit;
 
@@ -10,17 +8,11 @@ namespace Application.Tests.Settings.Queries.GetSettingsByCategory;
 
 public class GetSettingsByCategoryQueryHandlerTests
 {
-    private readonly IMapper _mapper;
     private readonly GetSettingsByCategoryQueryHandler _handler;
 
     public GetSettingsByCategoryQueryHandlerTests()
     {
-        var configuration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<MappingProfile>();
-        });
-        _mapper = configuration.CreateMapper();
-        _handler = new GetSettingsByCategoryQueryHandler(_mapper);
+        _handler = new GetSettingsByCategoryQueryHandler();
     }
 
     [Fact]

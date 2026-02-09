@@ -1,6 +1,5 @@
 using Application.Common.Data;
 using Application.Employment.Queries.DTOs;
-using AutoMapper;
 using MediatR;
 
 namespace Application.Employment.Queries.GetEmploymentByIdForAdmin;
@@ -10,18 +9,28 @@ namespace Application.Employment.Queries.GetEmploymentByIdForAdmin;
 /// </summary>
 public class GetEmploymentByIdForAdminQueryHandler : IRequestHandler<GetEmploymentByIdForAdminQuery, EmploymentDto?>
 {
-    private readonly IMapper _mapper;
-
-    public GetEmploymentByIdForAdminQueryHandler(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
-
     public async Task<EmploymentDto?> Handle(GetEmploymentByIdForAdminQuery request, CancellationToken cancellationToken)
     {
-        var employment = StaticDataProvider.GetEmployment()
-            .FirstOrDefault(e => e.Id == request.Id && !e.IsDeleted);
+        var employmentData = StaticDataProvider.GetEmploymentData();
 
-        return await Task.FromResult(employment == null ? null : _mapper.Map<EmploymentDto>(employment));
+        if (request.Id < 1 || request.Id > employmentData.Count)
+            return await Task.FromResult<EmploymentDto?>(null);
+
+        var emp = employmentData[request.Id - 1];
+
+        var dto = new EmploymentDto
+        {
+            Id = request.Id,
+            CompanyName = emp.CompanyName,
+            JobTitle = emp.JobTitle,
+            StartDate = emp.StartDate,
+            EndDate = emp.EndDate,
+            Responsibilities = emp.Responsibilities,
+            Achievements = emp.Achievements,
+            Technologies = emp.Technologies,
+            DisplayOrder = request.Id
+        };
+
+        return await Task.FromResult<EmploymentDto?>(dto);
     }
 }

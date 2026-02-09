@@ -1,6 +1,5 @@
 using Application.Common.Data;
 using Application.Settings.Queries.DTOs;
-using AutoMapper;
 using MediatR;
 
 namespace Application.Settings.Queries.GetAllSettings;
@@ -10,21 +9,35 @@ namespace Application.Settings.Queries.GetAllSettings;
 /// </summary>
 public class GetAllSettingsQueryHandler : IRequestHandler<GetAllSettingsQuery, List<SettingsDto>>
 {
-    private readonly IMapper _mapper;
-
-    public GetAllSettingsQueryHandler(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
-
     public async Task<List<SettingsDto>> Handle(GetAllSettingsQuery request, CancellationToken cancellationToken)
     {
-        var settings = StaticDataProvider.GetSettings()
-            .Where(s => !s.IsDeleted)
-            .OrderBy(s => s.Category)
-            .ThenBy(s => s.Key)
-            .ToList();
+        var settings = new List<SettingsDto>();
+        var currentId = 1;
 
-        return await Task.FromResult(_mapper.Map<List<SettingsDto>>(settings));
+        foreach (var (key, value) in StaticDataProvider.GetHeroSettings())
+        {
+            settings.Add(new SettingsDto
+            {
+                Id = currentId++,
+                Key = key,
+                Value = value,
+                Category = "Hero",
+                LastModified = DateTime.UtcNow
+            });
+        }
+
+        foreach (var (key, value) in StaticDataProvider.GetAboutSettings())
+        {
+            settings.Add(new SettingsDto
+            {
+                Id = currentId++,
+                Key = key,
+                Value = value,
+                Category = "About",
+                LastModified = DateTime.UtcNow
+            });
+        }
+
+        return await Task.FromResult(settings);
     }
 }

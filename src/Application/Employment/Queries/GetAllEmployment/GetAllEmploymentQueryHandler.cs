@@ -1,6 +1,5 @@
 using Application.Common.Data;
 using Application.Employment.Queries.DTOs;
-using AutoMapper;
 using MediatR;
 
 namespace Application.Employment.Queries.GetAllEmployment;
@@ -10,20 +9,28 @@ namespace Application.Employment.Queries.GetAllEmployment;
 /// </summary>
 public class GetAllEmploymentQueryHandler : IRequestHandler<GetAllEmploymentQuery, List<EmploymentDto>>
 {
-    private readonly IMapper _mapper;
-
-    public GetAllEmploymentQueryHandler(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
-
     public async Task<List<EmploymentDto>> Handle(GetAllEmploymentQuery request, CancellationToken cancellationToken)
     {
-        var employment = StaticDataProvider.GetEmployment()
-            .Where(e => !e.IsDeleted)
-            .OrderBy(e => e.DisplayOrder)
-            .ToList();
+        var employmentData = StaticDataProvider.GetEmploymentData();
+        var dtos = new List<EmploymentDto>();
+        var currentId = 1;
 
-        return await Task.FromResult(_mapper.Map<List<EmploymentDto>>(employment));
+        foreach (var emp in employmentData)
+        {
+            dtos.Add(new EmploymentDto
+            {
+                Id = currentId++,
+                CompanyName = emp.CompanyName,
+                JobTitle = emp.JobTitle,
+                StartDate = emp.StartDate,
+                EndDate = emp.EndDate,
+                Responsibilities = emp.Responsibilities,
+                Achievements = emp.Achievements,
+                Technologies = emp.Technologies,
+                DisplayOrder = currentId - 1
+            });
+        }
+
+        return await Task.FromResult(dtos);
     }
 }

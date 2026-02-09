@@ -1,6 +1,5 @@
 using Application.Common.Data;
 using Application.Settings.Queries.DTOs;
-using AutoMapper;
 using MediatR;
 
 namespace Application.Settings.Queries.GetSettingById;
@@ -10,23 +9,36 @@ namespace Application.Settings.Queries.GetSettingById;
 /// </summary>
 public class GetSettingByIdQueryHandler : IRequestHandler<GetSettingByIdQuery, SettingsDto>
 {
-    private readonly IMapper _mapper;
-
-    public GetSettingByIdQueryHandler(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
-
     public async Task<SettingsDto> Handle(GetSettingByIdQuery request, CancellationToken cancellationToken)
     {
-        var setting = StaticDataProvider.GetSettings()
-            .FirstOrDefault(s => !s.IsDeleted && s.Id == request.Id);
+        var allSettings = new List<SettingsDto>();
+        var currentId = 1;
 
-        if (setting == null)
+        foreach (var (key, value) in StaticDataProvider.GetHeroSettings())
         {
-            return await Task.FromResult<SettingsDto>(null!);
+            allSettings.Add(new SettingsDto
+            {
+                Id = currentId++,
+                Key = key,
+                Value = value,
+                Category = "Hero",
+                LastModified = DateTime.UtcNow
+            });
         }
 
-        return await Task.FromResult(_mapper.Map<SettingsDto>(setting));
+        foreach (var (key, value) in StaticDataProvider.GetAboutSettings())
+        {
+            allSettings.Add(new SettingsDto
+            {
+                Id = currentId++,
+                Key = key,
+                Value = value,
+                Category = "About",
+                LastModified = DateTime.UtcNow
+            });
+        }
+
+        var setting = allSettings.FirstOrDefault(s => s.Id == request.Id);
+        return await Task.FromResult(setting!);
     }
 }

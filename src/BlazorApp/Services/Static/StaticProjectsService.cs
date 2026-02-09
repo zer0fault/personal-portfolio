@@ -1,27 +1,34 @@
 using Application.Common.Data;
 using Application.Projects.Queries.DTOs;
-using AutoMapper;
 using Domain.Enums;
 
 namespace BlazorApp.Services.Static;
 
 public class StaticProjectsService : IProjectsService
 {
-    private readonly IMapper _mapper;
-
-    public StaticProjectsService(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
-
     public Task<List<ProjectDto>> GetAllProjectsAsync()
     {
-        var projects = StaticDataProvider.GetProjects()
-            .Where(p => p.Status == ProjectStatus.Published && !p.IsDeleted)
-            .OrderBy(p => p.DisplayOrder)
-            .ToList();
+        var projects = StaticDataProvider.GetProjectsData();
+        var dtos = new List<ProjectDto>();
+        var currentId = 1;
 
-        return Task.FromResult(_mapper.Map<List<ProjectDto>>(projects));
+        foreach (var project in projects)
+        {
+            dtos.Add(new ProjectDto
+            {
+                Id = currentId,
+                Title = project.Title,
+                ShortDescription = project.ShortDescription,
+                Technologies = project.Technologies,
+                GitHubUrl = project.GitHubUrl,
+                LiveDemoUrl = project.LiveDemoUrl,
+                Status = ProjectStatus.Published,
+                DisplayOrder = currentId++,
+                ThumbnailPath = string.Empty
+            });
+        }
+
+        return Task.FromResult(dtos);
     }
 
     public Task<List<ProjectDto>> GetAllProjectsForAdminAsync()
@@ -31,13 +38,27 @@ public class StaticProjectsService : IProjectsService
 
     public Task<ProjectDetailDto?> GetProjectByIdAsync(int id)
     {
-        var project = StaticDataProvider.GetProjects()
-            .FirstOrDefault(p => p.Id == id && p.Status == ProjectStatus.Published && !p.IsDeleted);
+        var projects = StaticDataProvider.GetProjectsData();
 
-        if (project == null)
+        if (id < 1 || id > projects.Count)
             return Task.FromResult<ProjectDetailDto?>(null);
 
-        return Task.FromResult<ProjectDetailDto?>(_mapper.Map<ProjectDetailDto>(project));
+        var project = projects[id - 1];
+
+        var dto = new ProjectDetailDto
+        {
+            Id = id,
+            Title = project.Title,
+            ShortDescription = project.ShortDescription,
+            FullDescription = project.FullDescription,
+            Technologies = project.Technologies,
+            GitHubUrl = project.GitHubUrl,
+            LiveDemoUrl = project.LiveDemoUrl,
+            Status = ProjectStatus.Published,
+            Images = new()
+        };
+
+        return Task.FromResult<ProjectDetailDto?>(dto);
     }
 
     public Task<ProjectDetailDto?> GetProjectByIdForAdminAsync(int id)

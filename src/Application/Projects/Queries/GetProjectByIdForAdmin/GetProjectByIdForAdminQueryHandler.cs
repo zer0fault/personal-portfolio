@@ -1,6 +1,6 @@
 using Application.Common.Data;
 using Application.Projects.Queries.DTOs;
-using AutoMapper;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.Projects.Queries.GetProjectByIdForAdmin;
@@ -10,18 +10,28 @@ namespace Application.Projects.Queries.GetProjectByIdForAdmin;
 /// </summary>
 public class GetProjectByIdForAdminQueryHandler : IRequestHandler<GetProjectByIdForAdminQuery, ProjectDetailDto?>
 {
-    private readonly IMapper _mapper;
-
-    public GetProjectByIdForAdminQueryHandler(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
-
     public async Task<ProjectDetailDto?> Handle(GetProjectByIdForAdminQuery request, CancellationToken cancellationToken)
     {
-        var project = StaticDataProvider.GetProjects()
-            .FirstOrDefault(p => p.Id == request.Id && !p.IsDeleted);
+        var projects = StaticDataProvider.GetProjectsData();
 
-        return await Task.FromResult(project == null ? null : _mapper.Map<ProjectDetailDto>(project));
+        if (request.Id < 1 || request.Id > projects.Count)
+            return await Task.FromResult<ProjectDetailDto?>(null);
+
+        var project = projects[request.Id - 1];
+
+        var dto = new ProjectDetailDto
+        {
+            Id = request.Id,
+            Title = project.Title,
+            ShortDescription = project.ShortDescription,
+            FullDescription = project.FullDescription,
+            Technologies = project.Technologies,
+            GitHubUrl = project.GitHubUrl,
+            LiveDemoUrl = project.LiveDemoUrl,
+            Status = ProjectStatus.Published,
+            Images = new()
+        };
+
+        return await Task.FromResult<ProjectDetailDto?>(dto);
     }
 }

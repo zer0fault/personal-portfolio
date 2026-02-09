@@ -1,8 +1,6 @@
 using Application.Common.Data;
-using Application.Common.Mappings;
 using Application.Employment.Queries.DTOs;
 using Application.Employment.Queries.GetEmploymentByIdForAdmin;
-using AutoMapper;
 using FluentAssertions;
 using Xunit;
 
@@ -10,17 +8,11 @@ namespace Application.Tests.Employment.Queries.GetEmploymentByIdForAdmin;
 
 public class GetEmploymentByIdForAdminQueryHandlerTests
 {
-    private readonly IMapper _mapper;
     private readonly GetEmploymentByIdForAdminQueryHandler _handler;
 
     public GetEmploymentByIdForAdminQueryHandlerTests()
     {
-        var configuration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<MappingProfile>();
-        });
-        _mapper = configuration.CreateMapper();
-        _handler = new GetEmploymentByIdForAdminQueryHandler(_mapper);
+        _handler = new GetEmploymentByIdForAdminQueryHandler();
     }
 
     [Fact]

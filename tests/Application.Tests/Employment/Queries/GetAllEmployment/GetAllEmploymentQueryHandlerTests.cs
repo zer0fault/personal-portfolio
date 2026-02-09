@@ -1,8 +1,6 @@
 using Application.Common.Data;
-using Application.Common.Mappings;
 using Application.Employment.Queries.DTOs;
 using Application.Employment.Queries.GetAllEmployment;
-using AutoMapper;
 using FluentAssertions;
 using Xunit;
 
@@ -10,17 +8,11 @@ namespace Application.Tests.Employment.Queries.GetAllEmployment;
 
 public class GetAllEmploymentQueryHandlerTests
 {
-    private readonly IMapper _mapper;
     private readonly GetAllEmploymentQueryHandler _handler;
 
     public GetAllEmploymentQueryHandlerTests()
     {
-        var configuration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<MappingProfile>();
-        });
-        _mapper = configuration.CreateMapper();
-        _handler = new GetAllEmploymentQueryHandler(_mapper);
+        _handler = new GetAllEmploymentQueryHandler();
     }
 
     [Fact]
