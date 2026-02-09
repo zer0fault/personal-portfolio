@@ -56,6 +56,6 @@ public class GetAllProjectsQueryHandlerTests
         result[0].DisplayOrder.Should().Be(1);
         result[1].DisplayOrder.Should().Be(2);
         result[0].Title.Should().Be("Personal Portfolio Website");
-        result[1].Title.Should().Be("E-Commerce Platform");
+        result[1].Title.Should().Be("Pomodoro TUI");
     }
 }

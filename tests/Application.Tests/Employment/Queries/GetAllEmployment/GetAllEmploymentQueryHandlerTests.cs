@@ -34,7 +34,7 @@ public class GetAllEmploymentQueryHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(3); // 2 Duck Creek positions + 1 Freelance
+        result.Should().HaveCount(3);
     }
 
     [Fact]

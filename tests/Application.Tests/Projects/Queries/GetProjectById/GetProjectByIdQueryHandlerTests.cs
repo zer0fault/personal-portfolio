@@ -72,7 +72,7 @@ public class GetProjectByIdQueryHandlerTests
     [Fact]
     public async Task Handle_Should_Return_Second_Project()
     {
-        // Arrange - StaticDataProvider has project with Id = 2
+        // Arrange
         var query = new GetProjectByIdQuery(2);
 
         // Act
@@ -81,6 +81,6 @@ public class GetProjectByIdQueryHandlerTests
         // Assert
         result.Should().NotBeNull();
         result!.Id.Should().Be(2);
-        result.Title.Should().Be("E-Commerce Platform");
+        result.Title.Should().Be("Pomodoro TUI");
     }
 }

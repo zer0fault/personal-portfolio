@@ -48,10 +48,9 @@ public class GetSkillByIdForAdminQueryHandlerTests
     public async Task Handle_Should_Return_Skill_For_Different_Categories()
     {
         // Arrange & Act
-        // ID 1 = C# (Language), ID 8 = .NET Framework (Framework), ID 14 = Microsoft Azure (Cloud)
         var languageResult = await _handler.Handle(new GetSkillByIdForAdminQuery(1), CancellationToken.None);
         var frameworkResult = await _handler.Handle(new GetSkillByIdForAdminQuery(8), CancellationToken.None);
-        var cloudResult = await _handler.Handle(new GetSkillByIdForAdminQuery(14), CancellationToken.None);
+        var cloudResult = await _handler.Handle(new GetSkillByIdForAdminQuery(13), CancellationToken.None);
 
         // Assert
         languageResult!.Category.Should().Be(SkillCategory.Language);

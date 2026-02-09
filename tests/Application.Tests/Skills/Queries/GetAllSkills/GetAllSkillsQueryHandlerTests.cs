@@ -26,7 +26,7 @@ public class GetAllSkillsQueryHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(32); // StaticDataProvider has 32 skills across all categories
+        result.Should().HaveCount(31);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class GetAllSkillsQueryHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(32);
+        result.Should().HaveCount(31);
 
         // Verify ordering: Language(0) < Framework(1) < Cloud(2) < Architecture(3) < Practice(4)
         // First skills should be from Language category
@@ -48,7 +48,6 @@ public class GetAllSkillsQueryHandlerTests
         result[0].Name.Should().Be("C#");
         result[0].DisplayOrder.Should().Be(1);
 
-        // Language category has 7 skills, so Framework starts at index 7
         result[7].Category.Should().Be(SkillCategory.Framework);
         result[7].Name.Should().Be(".NET Framework");
         result[7].DisplayOrder.Should().Be(1);
