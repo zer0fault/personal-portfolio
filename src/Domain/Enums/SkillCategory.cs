@@ -33,5 +33,10 @@ public enum SkillCategory
     /// <summary>
     /// Domain-specific knowledge (Insurance Technology, etc.)
     /// </summary>
-    Domain = 5
+    Domain = 5,
+
+    /// <summary>
+    /// AI/LLM integration tools and frameworks
+    /// </summary>
+    AI = 6
 }

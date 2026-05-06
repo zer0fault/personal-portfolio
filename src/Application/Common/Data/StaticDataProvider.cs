@@ -57,6 +57,27 @@ public static class StaticDataProvider
             FullDescription: "An aesthetic terminal application implementing the Pomodoro Technique with fully customizable work/break intervals. Features five built-in color schemes (Catppuccin Mocha, Nord, Gruvbox, Tokyo Night, Textual Dark), color-coded timer borders, keyboard-driven controls, and persistent TOML configuration. Built with Python's Textual framework for a responsive terminal interface.",
             Technologies: new() { "Python", "Textual", "TOML", "TUI" },
             GitHubUrl: "https://github.com/zer0fault/pomodoro-tui"
+        ),
+        new ProjectInfo(
+            Title: "eBird Heatmap",
+            ShortDescription: "Interactive global bird observation heatmap powered by the eBird API",
+            FullDescription: "An interactive mapping application that visualizes bird observation data worldwide. Supports three visualization modes — biodiversity (species density), individual species distribution, and notable/rare sightings — with real-time eBird API data. Includes global location search via OpenStreetMap geocoding, adjustable radius (10–50 km) and time window (1–30 days) filters, and 24-hour IndexedDB caching with manual refresh.",
+            Technologies: new() { "TypeScript", "Next.js", "MapLibre GL JS", "Tailwind CSS", "eBird API" },
+            GitHubUrl: "https://github.com/zer0fault/ebird-heatmap"
+        ),
+        new ProjectInfo(
+            Title: "Terminal Pokédex",
+            ShortDescription: "Feature-rich TUI for browsing Pokémon data in the terminal",
+            FullDescription: "A terminal user interface for exploring Pokémon data via the PokeAPI. Features search and filtering by name, ID, generation, or type; color-coded stat bars; terminal-rendered sprite images; evolution chain visualization; complete ability descriptions; sortable move tables; and support for alternate forms (Mega, Alolan variants). Uses SQLite caching and LRU sprite caching for performance, with a comprehensive test suite covering parsers, validation, and cache logic.",
+            Technologies: new() { "Python", "Textual", "PokeAPI", "SQLite", "Rich", "Pydantic" },
+            GitHubUrl: "https://github.com/zer0fault/Terminal-Pokedex"
+        ),
+        new ProjectInfo(
+            Title: "AI News Feed",
+            ShortDescription: "Dark-themed RSS dashboard aggregating AI news from major sources",
+            FullDescription: "A streamlined, dark-themed RSS dashboard that aggregates AI news from Anthropic, OpenAI, Google DeepMind, Hugging Face, Mistral, and major tech publications. Stories are presented in reverse chronological order with per-source filtering. Built as a static site with RSS fetched at build time, deployed on Cloudflare Pages.",
+            Technologies: new() { "TypeScript", "Astro", "CSS", "Cloudflare Pages" },
+            GitHubUrl: "https://github.com/zer0fault/ai-feed"
         )
     };
 
@@ -82,14 +103,14 @@ public static class StaticDataProvider
             EndDate: null,
             Responsibilities: new()
             {
-                "Designed, developed, and maintained web applications using .NET MVC/.NET Core frameworks and modern front-end technologies including HTML5, JavaScript, TypeScript, jQuery, and AngularJS, delivering responsive, user-focused interfaces",
-                "Built and integrated RESTful APIs and Web APIs, enabling secure and scalable communication between services and enhancing application interoperability",
-                "Utilized C# and ASP.NET to build robust, object-oriented solutions aligned with enterprise architecture and coding best practices",
-                "Managed and optimized relational databases (SQL Server) through well-structured queries and effective relational database design, improving data performance and reliability",
-                "Participated in CI/CD pipeline implementation and automation using PowerShell scripting, streamlining deployments and reducing system downtime",
-                "Conducted thorough debugging, code reviews, and performance optimization efforts to improve application quality and maintainability",
-                "Leveraged industry-standard software engineering practices across the SDLC including version control, testing, and build management, ensuring code stability and maintainability",
-                "Demonstrated working knowledge of IIS concepts, secure hosting, and deployment strategies for enterprise applications"
+                "Co-developed an internal Python-based AI developer orchestration framework automating SDLC workflows for 55 Claims engineers via specialized AI agents with structured workflow execution and validation layers ensuring generated code accuracy",
+                "Engineered fully automated developer environment provisioning reducing machine setup from 2–3 days to ~3.5 hours (~80% reduction) for 55 engineers; orchestrates software installation, repository configuration, local services, and credential management with minimal human input",
+                "Built AI-powered NightwatchJS test script generator reducing QA script authoring from 2–3 days to ~1 hour (~95% reduction) for 55 engineers via template-driven generation validated against department QA and coding standards",
+                "Co-led two internal AI tools at company hackathons: a GitHub PR summarizer (OpenAI GPT + webhooks, ~60% review time reduction, 15–20 PRs/week) and a GPT-4 RAG documentation assistant (~50% search time reduction); both adopted post-hackathon by engineering team",
+                "Designed and implemented secure ASP.NET Core RESTful APIs for critical payments and financial functions serving 5,000+ daily users, achieving 20% performance improvement over legacy system",
+                "Migrated claims application from JavaScript to TypeScript, re-engineered the build process for a 40% performance boost, patched critical jQuery security vulnerabilities, and introduced Jest unit tests achieving 90% code coverage",
+                "Optimized C# codebase by resolving deferred LINQ execution and correcting inefficient data types, improving performance by ~30%",
+                "Audited and refactored high-defect codebase areas, reducing customer defect inflow by 15% and cutting defect backlog by 10%"
             },
             Achievements: new(),
             Technologies: new() { "Git", "C#", "SQL", "PowerShell", "GitHub", "Cucumber", "SpecFlow", "MSSQL", "Debugging", "Unit Testing", "Acceptance Testing", "Agile", "Microsoft Azure", "NuGet", "ADO", ".NET Framework", "Nightwatch.js", "CI/CD" }
@@ -139,7 +160,11 @@ public static class StaticDataProvider
     {
         [SkillCategory.Language] = new()
         {
-            "C#", "JavaScript", "TypeScript", "Java", "C++", "PowerShell", "SQL"
+            "C#", "JavaScript", "TypeScript", "PowerShell", "SQL"
+        },
+        [SkillCategory.AI] = new()
+        {
+            "Claude AI", "Anthropic API", "MCP (Model Context Protocol)", "AI Agent Orchestration", "AI Workflow Automation"
         },
         [SkillCategory.Framework] = new()
         {
