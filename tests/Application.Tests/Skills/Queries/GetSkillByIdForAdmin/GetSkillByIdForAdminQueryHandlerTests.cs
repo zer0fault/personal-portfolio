@@ -1,3 +1,4 @@
+using Application.Common.Data;
 using Application.Skills.Queries.DTOs;
 using Application.Skills.Queries.GetSkillByIdForAdmin;
 using Domain.Enums;
@@ -47,20 +48,28 @@ public class GetSkillByIdForAdminQueryHandlerTests
     [Fact]
     public async Task Handle_Should_Return_Skill_For_Different_Categories()
     {
-        // Arrange & Act
-        var languageResult = await _handler.Handle(new GetSkillByIdForAdminQuery(1), CancellationToken.None);
-        var frameworkResult = await _handler.Handle(new GetSkillByIdForAdminQuery(8), CancellationToken.None);
-        var cloudResult = await _handler.Handle(new GetSkillByIdForAdminQuery(13), CancellationToken.None);
+        var skillsByCategory = StaticDataProvider.GetSkillsByCategory();
 
-        // Assert
+        // IDs are assigned in enum order; compute start ID for each category
+        var firstFrameworkId = skillsByCategory
+            .Where(kvp => (int)kvp.Key < (int)SkillCategory.Framework)
+            .Sum(kvp => kvp.Value.Count) + 1;
+        var firstCloudId = skillsByCategory
+            .Where(kvp => (int)kvp.Key < (int)SkillCategory.Cloud)
+            .Sum(kvp => kvp.Value.Count) + 1;
+
+        var languageResult = await _handler.Handle(new GetSkillByIdForAdminQuery(1), CancellationToken.None);
+        var frameworkResult = await _handler.Handle(new GetSkillByIdForAdminQuery(firstFrameworkId), CancellationToken.None);
+        var cloudResult = await _handler.Handle(new GetSkillByIdForAdminQuery(firstCloudId), CancellationToken.None);
+
         languageResult!.Category.Should().Be(SkillCategory.Language);
         languageResult.Name.Should().Be("C#");
 
         frameworkResult!.Category.Should().Be(SkillCategory.Framework);
-        frameworkResult.Name.Should().Be(".NET Framework");
+        frameworkResult.Name.Should().Be(skillsByCategory[SkillCategory.Framework][0]);
 
         cloudResult!.Category.Should().Be(SkillCategory.Cloud);
-        cloudResult.Name.Should().Be("Microsoft Azure");
+        cloudResult.Name.Should().Be(skillsByCategory[SkillCategory.Cloud][0]);
     }
 
     [Fact]

@@ -19,48 +19,38 @@ public class GetAllProjectsForAdminQueryHandlerTests
     [Fact]
     public async Task Handle_Should_Return_All_Projects()
     {
-        // Arrange
         var query = new GetAllProjectsForAdminQuery();
 
-        // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
-        // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(2); // StaticDataProvider has 2 projects
+        result.Should().HaveCount(StaticDataProvider.GetProjectsData().Count);
         result.Should().AllSatisfy(p => p.Status.Should().Be(ProjectStatus.Published));
     }
 
     [Fact]
     public async Task Handle_Should_Order_Projects_By_DisplayOrder()
     {
-        // Arrange
         var query = new GetAllProjectsForAdminQuery();
 
-        // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
-        // Assert
+        var projectsData = StaticDataProvider.GetProjectsData();
         result.Should().NotBeNull();
-        result.Should().HaveCount(2);
-        result[0].DisplayOrder.Should().Be(1);
-        result[1].DisplayOrder.Should().Be(2);
-        result[0].Title.Should().Be("Personal Portfolio Website");
-        result[1].Title.Should().Be("Pomodoro TUI");
+        result.Should().HaveCount(projectsData.Count);
+        result.Select(p => p.DisplayOrder).Should().Equal(Enumerable.Range(1, projectsData.Count));
+        result.Select(p => p.Title).Should().Equal(projectsData.Select(p => p.Title));
     }
 
     [Fact]
     public async Task Handle_Should_Include_All_Project_Details()
     {
-        // Arrange
         var query = new GetAllProjectsForAdminQuery();
 
-        // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
-        // Assert
         result.Should().NotBeNull();
-        result.Should().HaveCount(2);
+        result.Should().HaveCount(StaticDataProvider.GetProjectsData().Count);
         result.Should().AllSatisfy(p =>
         {
             p.Id.Should().BeGreaterThan(0);

@@ -1,3 +1,4 @@
+using Application.Common.Data;
 using Application.Skills.Queries.DTOs;
 using Application.Skills.Queries.GetAllSkills;
 using Domain.Enums;
@@ -18,61 +19,50 @@ public class GetAllSkillsQueryHandlerTests
     [Fact]
     public async Task Handle_Should_Return_All_Skills()
     {
-        // Arrange
         var query = new GetAllSkillsQuery();
 
-        // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
-        // Assert
+        var expectedCount = StaticDataProvider.GetSkillsByCategory().Sum(x => x.Value.Count);
         result.Should().NotBeNull();
-        result.Should().HaveCount(31);
+        result.Should().HaveCount(expectedCount);
     }
 
     [Fact]
     public async Task Handle_Should_Order_Skills_By_Category_Then_DisplayOrder()
     {
-        // Arrange
         var query = new GetAllSkillsQuery();
 
-        // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
-        // Assert
+        var skillsByCategory = StaticDataProvider.GetSkillsByCategory();
+        var expectedCount = skillsByCategory.Sum(x => x.Value.Count);
         result.Should().NotBeNull();
-        result.Should().HaveCount(31);
+        result.Should().HaveCount(expectedCount);
 
-        // Verify ordering: Language(0) < Framework(1) < Cloud(2) < Architecture(3) < Practice(4)
-        // First skills should be from Language category
         result[0].Category.Should().Be(SkillCategory.Language);
         result[0].Name.Should().Be("C#");
         result[0].DisplayOrder.Should().Be(1);
 
-        result[7].Category.Should().Be(SkillCategory.Framework);
-        result[7].Name.Should().Be(".NET Framework");
-        result[7].DisplayOrder.Should().Be(1);
+        // First Framework skill falls immediately after all Language skills
+        var firstFrameworkIndex = skillsByCategory[SkillCategory.Language].Count;
+        result[firstFrameworkIndex].Category.Should().Be(SkillCategory.Framework);
+        result[firstFrameworkIndex].Name.Should().Be(skillsByCategory[SkillCategory.Framework][0]);
+        result[firstFrameworkIndex].DisplayOrder.Should().Be(1);
 
-        // Categories should be ordered: Language -> Framework -> Cloud -> Architecture -> Practice
+        // Categories should appear in enum order
         var categories = result.Select(s => s.Category).Distinct().ToList();
-        categories.Should().ContainInOrder(
-            SkillCategory.Language,
-            SkillCategory.Framework,
-            SkillCategory.Cloud,
-            SkillCategory.Architecture,
-            SkillCategory.Practice
-        );
+        var expectedCategories = skillsByCategory.Keys.OrderBy(k => k).ToList();
+        categories.Should().ContainInOrder(expectedCategories);
     }
 
     [Fact]
     public async Task Handle_Should_Include_Skill_Names()
     {
-        // Arrange
         var query = new GetAllSkillsQuery();
 
-        // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
-        // Assert
         result.Should().NotBeNull();
         result.Should().Contain(s => s.Name == "C#");
         result.Should().Contain(s => s.Name == "JavaScript");
