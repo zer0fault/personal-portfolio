@@ -19,11 +19,6 @@ public class Skill : BaseEntity
     public SkillCategory Category { get; set; }
 
     /// <summary>
-    /// Proficiency level for this skill
-    /// </summary>
-    public ProficiencyLevel ProficiencyLevel { get; set; }
-
-    /// <summary>
     /// Display order for sorting skills
     /// </summary>
     public int DisplayOrder { get; set; }

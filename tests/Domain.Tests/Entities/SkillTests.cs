@@ -16,7 +16,6 @@ public class SkillTests
         skill.Id.Should().Be(0);
         skill.Name.Should().BeEmpty();
         skill.Category.Should().Be(SkillCategory.Language);
-        skill.ProficiencyLevel.Should().Be(ProficiencyLevel.Beginner);
         skill.DisplayOrder.Should().Be(0);
         skill.IconUrl.Should().BeNull();
     }
@@ -33,7 +32,6 @@ public class SkillTests
         skill.Id = 1;
         skill.Name = "C#";
         skill.Category = SkillCategory.Language;
-        skill.ProficiencyLevel = ProficiencyLevel.Advanced;
         skill.DisplayOrder = 1;
         skill.IconUrl = "https://cdn.example.com/csharp.svg";
         skill.CreatedDate = createdDate;
@@ -43,7 +41,6 @@ public class SkillTests
         skill.Id.Should().Be(1);
         skill.Name.Should().Be("C#");
         skill.Category.Should().Be(SkillCategory.Language);
-        skill.ProficiencyLevel.Should().Be(ProficiencyLevel.Advanced);
         skill.DisplayOrder.Should().Be(1);
         skill.IconUrl.Should().Be("https://cdn.example.com/csharp.svg");
         skill.CreatedDate.Should().Be(createdDate);
@@ -67,23 +64,6 @@ public class SkillTests
 
         // Assert
         skill.Category.Should().Be(category);
-    }
-
-    [Theory]
-    [InlineData(ProficiencyLevel.Beginner)]
-    [InlineData(ProficiencyLevel.Intermediate)]
-    [InlineData(ProficiencyLevel.Advanced)]
-    [InlineData(ProficiencyLevel.Expert)]
-    public void Skill_ShouldSupportAllProficiencyLevels(ProficiencyLevel level)
-    {
-        // Arrange
-        var skill = new Skill();
-
-        // Act
-        skill.ProficiencyLevel = level;
-
-        // Assert
-        skill.ProficiencyLevel.Should().Be(level);
     }
 
     [Fact]

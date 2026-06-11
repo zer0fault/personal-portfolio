@@ -483,7 +483,6 @@ public class MappingProfileTests
             Id = 1,
             Name = "C#",
             Category = SkillCategory.Language,
-            ProficiencyLevel = ProficiencyLevel.Expert,
             DisplayOrder = 1,
             IconUrl = "/icons/csharp.svg",
             CreatedDate = DateTime.UtcNow,
@@ -511,7 +510,6 @@ public class MappingProfileTests
             Id = 2,
             Name = "Problem Solving",
             Category = SkillCategory.Practice,
-            ProficiencyLevel = ProficiencyLevel.Advanced,
             DisplayOrder = 10,
             IconUrl = null,
             CreatedDate = DateTime.UtcNow,
@@ -540,7 +538,6 @@ public class MappingProfileTests
                 Id = (int)category,
                 Name = $"Test Skill {category}",
                 Category = category,
-                ProficiencyLevel = ProficiencyLevel.Intermediate,
                 DisplayOrder = 1
             };
 
