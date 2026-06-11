@@ -5,6 +5,7 @@
 @using Application.Skills.Commands.CreateSkill
 @using Application.Skills.Commands.UpdateSkill
 @using Domain.Enums
+@using BlazorApp.Helpers
 @using System.ComponentModel.DataAnnotations
 @inject ISkillsService SkillsService
 @inject NavigationManager NavigationManager
@@ -236,19 +237,7 @@
         NavigationManager.NavigateTo("/admin/skills");
     }
 
-    private string GetCategoryName(SkillCategory category)
-    {
-        return category switch
-        {
-            SkillCategory.Language => "Programming Languages",
-            SkillCategory.Framework => "Frameworks & Libraries",
-            SkillCategory.Cloud => "Cloud Platforms",
-            SkillCategory.Architecture => "Architecture & Patterns",
-            SkillCategory.Practice => "Development Practices",
-            SkillCategory.Domain => "Domain Knowledge",
-            _ => category.ToString()
-        };
-    }
+    private string GetCategoryName(SkillCategory category) => category.GetDisplayName();
 
     public class SkillFormModel
     {

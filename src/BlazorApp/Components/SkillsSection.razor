@@ -1,5 +1,6 @@
 @inject ISkillsService SkillsService
 @using Domain.Enums
+@using BlazorApp.Helpers
 
 <section class="skills-section" id="skills">
     <div class="container">
@@ -58,17 +59,7 @@
         }
     }
 
-    private string GetCategoryName(SkillCategory category) => category switch
-    {
-        SkillCategory.Language => "Languages",
-        SkillCategory.Framework => "Frameworks & Libraries",
-        SkillCategory.Cloud => "Cloud & DevOps",
-        SkillCategory.Architecture => "Architecture & Design",
-        SkillCategory.Practice => "Practices & Tools",
-        SkillCategory.Domain => "Domain Knowledge",
-        SkillCategory.AI => "AI / LLM Integration",
-        _ => category.ToString()
-    };
+    private string GetCategoryName(SkillCategory category) => category.GetDisplayName();
 
     private string GetCategoryIcon(SkillCategory category) => category switch
     {

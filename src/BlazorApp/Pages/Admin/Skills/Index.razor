@@ -2,6 +2,7 @@
 @layout AdminLayout
 @using Application.Skills.Queries.DTOs
 @using Domain.Enums
+@using BlazorApp.Helpers
 @inject ISkillsService SkillsService
 @inject NavigationManager NavigationManager
 
@@ -196,17 +197,5 @@
         isDeleting = false;
     }
 
-    private string GetCategoryName(SkillCategory category)
-    {
-        return category switch
-        {
-            SkillCategory.Language => "Programming Languages",
-            SkillCategory.Framework => "Frameworks & Libraries",
-            SkillCategory.Cloud => "Cloud Platforms",
-            SkillCategory.Architecture => "Architecture & Patterns",
-            SkillCategory.Practice => "Development Practices",
-            SkillCategory.Domain => "Domain Knowledge",
-            _ => category.ToString()
-        };
-    }
+    private string GetCategoryName(SkillCategory category) => category.GetDisplayName();
 }
