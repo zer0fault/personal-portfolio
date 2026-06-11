@@ -82,13 +82,13 @@ public static class DatabaseSeeder
         // Seed Skills
         var skills = new[]
         {
-            new Skill { Name = "C#", Category = SkillCategory.Language, ProficiencyLevel = ProficiencyLevel.Expert, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
-            new Skill { Name = "JavaScript", Category = SkillCategory.Language, ProficiencyLevel = ProficiencyLevel.Advanced, DisplayOrder = 2, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
-            new Skill { Name = "ASP.NET Core", Category = SkillCategory.Framework, ProficiencyLevel = ProficiencyLevel.Expert, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
-            new Skill { Name = "Blazor", Category = SkillCategory.Framework, ProficiencyLevel = ProficiencyLevel.Advanced, DisplayOrder = 2, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
-            new Skill { Name = "Azure", Category = SkillCategory.Cloud, ProficiencyLevel = ProficiencyLevel.Advanced, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
-            new Skill { Name = "Clean Architecture", Category = SkillCategory.Architecture, ProficiencyLevel = ProficiencyLevel.Expert, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
-            new Skill { Name = "Unit Testing", Category = SkillCategory.Practice, ProficiencyLevel = ProficiencyLevel.Expert, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow }
+            new Skill { Name = "C#", Category = SkillCategory.Language, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
+            new Skill { Name = "JavaScript", Category = SkillCategory.Language, DisplayOrder = 2, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
+            new Skill { Name = "ASP.NET Core", Category = SkillCategory.Framework, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
+            new Skill { Name = "Blazor", Category = SkillCategory.Framework, DisplayOrder = 2, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
+            new Skill { Name = "Azure", Category = SkillCategory.Cloud, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
+            new Skill { Name = "Clean Architecture", Category = SkillCategory.Architecture, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow },
+            new Skill { Name = "Unit Testing", Category = SkillCategory.Practice, DisplayOrder = 1, CreatedDate = DateTime.UtcNow, ModifiedDate = DateTime.UtcNow }
         };
 
         context.Skills.AddRange(skills);

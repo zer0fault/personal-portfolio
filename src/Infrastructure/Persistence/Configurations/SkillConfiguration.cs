@@ -22,9 +22,6 @@ public class SkillConfiguration : IEntityTypeConfiguration<Skill>
         builder.Property(s => s.Category)
             .IsRequired();
 
-        builder.Property(s => s.ProficiencyLevel)
-            .IsRequired();
-
         builder.Property(s => s.DisplayOrder)
             .IsRequired();
 
