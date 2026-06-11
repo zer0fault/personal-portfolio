@@ -71,6 +71,6 @@ public class GetProjectByIdQueryHandlerTests
         // Assert
         result.Should().NotBeNull();
         result!.Id.Should().Be(2);
-        result.Title.Should().Be("Pomodoro TUI");
+        result.Title.Should().Be("Azure Document Intelligence");
     }
 }

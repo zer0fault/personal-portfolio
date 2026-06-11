@@ -25,7 +25,7 @@ public static class StaticDataProvider
     /// </summary>
     public static Dictionary<string, string> GetAboutSettings() => new()
     {
-        ["Bio"] = "Passionate software engineer with expertise in .NET development, cloud computing, and modern web technologies. I specialize in building scalable, maintainable applications using Clean Architecture principles and industry best practices.\n\nWith a strong foundation in both backend and frontend development, I enjoy solving complex problems and delivering high-quality software solutions that make a real impact.",
+        ["Bio"] = "I am a Software Engineer with hands-on experience in .NET (C#), AI-driven engineering solutions, and enterprise application development within high-availability environments. I specialize in building scalable backend systems, RESTful APIs, and automation-driven platforms that improve developer productivity and system performance.\n\nMy work spans AI and Generative AI integration, including agent-based workflows, RAG systems, and LLM-powered development tools that streamline SDLC processes and enhance engineering efficiency. I enjoy solving complex technical problems, improving system reliability, and delivering secure, maintainable code aligned with modern engineering and compliance standards.\n\nI have strong experience supporting production systems, including Tier 3 defect triage and Severity 1 incident resolution under strict SLAs, where I focus on rapid diagnosis, stability, and root-cause resolution. I collaborate effectively with cross-functional teams including engineering, QA, and product to deliver high-quality features and continuous improvements.\n\nCore expertise includes .NET/C#, Python, JavaScript, Azure, RESTful API design, CI/CD pipelines, SQL Server, test automation, and AI-powered development workflows. I am passionate about leveraging emerging AI technologies to enhance software delivery and build more intelligent engineering systems.",
         ["Education"] = "Bachelor of Science in Computer Science, Southern New Hampshire University",
         ["Certifications"] = "Microsoft Certified: Azure Fundamentals"
     };
@@ -50,6 +50,13 @@ public static class StaticDataProvider
             FullDescription: "A modern, responsive portfolio website built with Blazor WebAssembly and Azure Functions, demonstrating Clean Architecture principles and cloud-native development practices.",
             Technologies: new() { "C#", "Blazor", "Azure Functions", "EF Core", "SQL Server" },
             GitHubUrl: "https://github.com/zer0fault/personal-portfolio"
+        ),
+        new ProjectInfo(
+            Title: "Azure Document Intelligence",
+            ShortDescription: "End-to-end RAG pipeline for natural language document querying with citations",
+            FullDescription: "An end-to-end retrieval-augmented generation (RAG) pipeline that enables natural language querying of enterprise documents with answers grounded in source material and direct citations. Implements semantic retrieval using Azure OpenAI embeddings (text-embedding-3-small) and Azure AI Search as the vector store, with gpt-4.1-mini for answer generation. Features idempotent ingestion with overlap chunking, server-side credential isolation, and a citation system tracing every answer to exact document chunks. Comprehensive test coverage with 28 passing tests across TypeScript and Python.",
+            Technologies: new() { "Azure OpenAI", "Azure AI Search", "Next.js", "TypeScript", "Python", "Tailwind CSS", "Vitest", "pytest" },
+            GitHubUrl: "https://github.com/zer0fault/azure-docs-intelligence-showcase"
         ),
         new ProjectInfo(
             Title: "Pomodoro TUI",
@@ -98,21 +105,22 @@ public static class StaticDataProvider
     {
         new EmploymentInfo(
             CompanyName: "Duck Creek Technologies",
-            JobTitle: "Sr. Associate Software Engineer",
+            JobTitle: "Senior Associate Software Engineer",
             StartDate: DateTime.Parse("2022-09-01"),
             EndDate: null,
             Responsibilities: new()
             {
-                "Co-developed an internal Python-based AI developer orchestration framework automating SDLC workflows for 55 Claims engineers via specialized AI agents with structured workflow execution and validation layers ensuring generated code accuracy",
-                "Engineered fully automated developer environment provisioning reducing machine setup from 2–3 days to ~3.5 hours (~80% reduction) for 55 engineers; orchestrates software installation, repository configuration, local services, and credential management with minimal human input",
-                "Built AI-powered NightwatchJS test script generator reducing QA script authoring from 2–3 days to ~1 hour (~95% reduction) for 55 engineers via template-driven generation validated against department QA and coding standards",
-                "Co-led two internal AI tools at company hackathons: a GitHub PR summarizer (OpenAI GPT + webhooks, ~60% review time reduction, 15–20 PRs/week) and a GPT-4 RAG documentation assistant (~50% search time reduction); both adopted post-hackathon by engineering team",
-                "Designed and implemented secure ASP.NET Core RESTful APIs for critical payments and financial functions serving 5,000+ daily users, achieving 20% performance improvement over legacy system",
-                "Migrated claims application from JavaScript to TypeScript, re-engineered the build process for a 40% performance boost, patched critical jQuery security vulnerabilities, and introduced Jest unit tests achieving 90% code coverage",
-                "Optimized C# codebase by resolving deferred LINQ execution and correcting inefficient data types, improving performance by ~30%",
-                "Audited and refactored high-defect codebase areas, reducing customer defect inflow by 15% and cutting defect backlog by 10%"
+                "Improve application performance by enhancing secure ASP.NET Core RESTful APIs that support critical financial operations, resulting in faster and more reliable system behavior for end users.",
+                "Strengthen front-end reliability and security by migrating legacy JavaScript components to TypeScript, modernizing build processes, fixing critical vulnerabilities, and implementing automated testing practices with high coverage.",
+                "Optimize backend performance by refactoring C# application logic, eliminating inefficient query patterns, and improving system responsiveness for enterprise-scale usage."
             },
-            Achievements: new(),
+            Achievements: new()
+            {
+                "Lowered customer-reported defects by 15% and reduced backlog volume by 10% through targeted audits and refactoring efforts focused on high-risk code areas, improving overall application stability and maintainability.",
+                "Accelerated SDLC delivery by co-developing a Python-based AI orchestration framework that automated developer workflows through agent-driven execution pipelines and validation layers, improving code quality and consistency across engineering processes.",
+                "Reduced developer environment setup time from days to hours by building a fully automated provisioning solution that streamlined software installation, repository configuration, local services, and credential setup.",
+                "Cut QA automation script creation time from days to about an hour by developing an AI-powered NightwatchJS test generation system that produced standards-aligned, validated test scripts for consistent engineering use."
+            },
             Technologies: new() { "Git", "C#", "SQL", "PowerShell", "GitHub", "Cucumber", "SpecFlow", "MSSQL", "Debugging", "Unit Testing", "Acceptance Testing", "Agile", "Microsoft Azure", "NuGet", "ADO", ".NET Framework", "Nightwatch.js", "CI/CD" }
         ),
         new EmploymentInfo(
@@ -160,19 +168,21 @@ public static class StaticDataProvider
     {
         [SkillCategory.Language] = new()
         {
-            "C#", "JavaScript", "TypeScript", "PowerShell", "SQL"
+            "C#", "Python", "JavaScript", "TypeScript"
         },
         [SkillCategory.AI] = new()
         {
-            "Claude AI", "Anthropic API", "MCP (Model Context Protocol)", "AI Agent Orchestration", "AI Workflow Automation"
+            "Claude AI", "Anthropic API", "Model Context Protocol (MCP)", "AI Agent Orchestration",
+            "AI Workflow Automation", "Retrieval-Augmented Generation (RAG)", "Prompt Engineering",
+            "LLM-Powered Application Development"
         },
         [SkillCategory.Framework] = new()
         {
-            ".NET Framework", ".NET Core", "ASP.NET", "Blazor", "jQuery"
+            "ASP.NET Core", "RESTful APIs", "Microservices", "Distributed Systems", "Object-Oriented Programming"
         },
         [SkillCategory.Cloud] = new()
         {
-            "Microsoft Azure"
+            "Microsoft Azure", "Azure Pipelines", "CI/CD", "PowerShell", "Infrastructure & Environment Automation"
         },
         [SkillCategory.Architecture] = new()
         {
@@ -180,9 +190,10 @@ public static class StaticDataProvider
         },
         [SkillCategory.Practice] = new()
         {
-            "Git", "GitHub", "Unit Testing", "Acceptance Testing", "Cucumber",
-            "SpecFlow", "Nightwatch.js", "Performance Testing", "CI/CD", "Agile",
-            "Debugging", "ADO", "NuGet", "MSSQL", "XML", "Duck Creek Author", "OpenGL"
+            "MSSQL", "Data Modeling", "Query Performance Optimization",
+            "Nightwatch.js", "SpecFlow", "Jest", "Unit & Integration Testing",
+            "Snyk", "SonarQube", "Secure SDLC", "Static Code Analysis", "Vulnerability Remediation",
+            "Git", "GitHub", "Agile", "ADO"
         }
     };
 

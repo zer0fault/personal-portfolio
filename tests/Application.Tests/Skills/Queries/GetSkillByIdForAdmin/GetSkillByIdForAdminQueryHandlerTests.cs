@@ -75,17 +75,17 @@ public class GetSkillByIdForAdminQueryHandlerTests
     [Fact]
     public async Task Handle_Should_Map_All_Properties_Correctly()
     {
-        // Arrange - ID 3 is TypeScript (Language category, display order 3)
-        var query = new GetSkillByIdForAdminQuery(3);
+        // Arrange - ID 4 is TypeScript (Language category, display order 4)
+        var query = new GetSkillByIdForAdminQuery(4);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
-        result!.Id.Should().Be(3);
+        result!.Id.Should().Be(4);
         result.Name.Should().Be("TypeScript");
         result.Category.Should().Be(SkillCategory.Language);
-        result.DisplayOrder.Should().Be(3);
+        result.DisplayOrder.Should().Be(4);
     }
 }

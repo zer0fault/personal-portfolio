@@ -5,7 +5,7 @@ namespace BlazorApp.Services;
 public class ThemeService
 {
     private readonly IJSRuntime _jsRuntime;
-    private string _currentTheme = "light";
+    private string _currentTheme = "dark";
     public event Action? OnThemeChanged;
 
     public ThemeService(IJSRuntime jsRuntime)
@@ -19,12 +19,12 @@ public class ThemeService
     {
         try
         {
-            _currentTheme = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "theme") ?? "light";
+            _currentTheme = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "theme") ?? "dark";
             await ApplyThemeAsync(_currentTheme);
         }
         catch
         {
-            _currentTheme = "light";
+            _currentTheme = "dark";
         }
     }
 

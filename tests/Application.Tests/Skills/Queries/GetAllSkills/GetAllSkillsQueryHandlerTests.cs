@@ -65,11 +65,11 @@ public class GetAllSkillsQueryHandlerTests
 
         result.Should().NotBeNull();
         result.Should().Contain(s => s.Name == "C#");
+        result.Should().Contain(s => s.Name == "Python");
         result.Should().Contain(s => s.Name == "JavaScript");
-        result.Should().Contain(s => s.Name == "ASP.NET");
-        result.Should().Contain(s => s.Name == "Blazor");
+        result.Should().Contain(s => s.Name == "ASP.NET Core");
         result.Should().Contain(s => s.Name == "Microsoft Azure");
         result.Should().Contain(s => s.Name == "Clean Architecture");
-        result.Should().Contain(s => s.Name == "Unit Testing");
+        result.Should().Contain(s => s.Name == "Unit & Integration Testing");
     }
 }
