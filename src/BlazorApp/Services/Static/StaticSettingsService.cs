@@ -7,47 +7,20 @@ public class StaticSettingsService : ISettingsService
 {
     public Task<List<SettingsDto>> GetAllSettingsAsync()
     {
-        var settings = new List<SettingsDto>();
-        var currentId = 1;
-
-        foreach (var (key, value) in StaticDataProvider.GetHeroSettings())
-        {
-            settings.Add(new SettingsDto
-            {
-                Id = currentId++,
-                Key = key,
-                Value = value,
-                Category = "Hero",
-                LastModified = DateTime.UtcNow
-            });
-        }
-
-        foreach (var (key, value) in StaticDataProvider.GetAboutSettings())
-        {
-            settings.Add(new SettingsDto
-            {
-                Id = currentId++,
-                Key = key,
-                Value = value,
-                Category = "About",
-                LastModified = DateTime.UtcNow
-            });
-        }
-
-        return Task.FromResult(settings);
+        return Task.FromResult(StaticDataProvider.GetAllSettingsDtos());
     }
 
     public Task<List<SettingsDto>> GetSettingsByCategoryAsync(string category)
     {
-        var allSettings = GetAllSettingsAsync().Result;
-        var filtered = allSettings.Where(s => s.Category == category).ToList();
+        var filtered = StaticDataProvider.GetAllSettingsDtos()
+            .Where(s => s.Category == category)
+            .ToList();
         return Task.FromResult(filtered);
     }
 
     public Task<SettingsDto?> GetSettingByIdAsync(int id)
     {
-        var allSettings = GetAllSettingsAsync().Result;
-        var setting = allSettings.FirstOrDefault(s => s.Id == id);
+        var setting = StaticDataProvider.GetAllSettingsDtos().FirstOrDefault(s => s.Id == id);
         return Task.FromResult(setting);
     }
 

@@ -1,3 +1,4 @@
+using Application.Settings.Queries.DTOs;
 using Domain.Entities;
 using Domain.Enums;
 
@@ -196,6 +197,20 @@ public static class StaticDataProvider
             "Git", "GitHub", "Agile", "ADO"
         }
     };
+
+    public static List<SettingsDto> GetAllSettingsDtos()
+    {
+        var settings = new List<SettingsDto>();
+        var currentId = 1;
+
+        foreach (var (key, value) in GetHeroSettings())
+            settings.Add(new SettingsDto { Id = currentId++, Key = key, Value = value, Category = "Hero", LastModified = DateTime.UtcNow });
+
+        foreach (var (key, value) in GetAboutSettings())
+            settings.Add(new SettingsDto { Id = currentId++, Key = key, Value = value, Category = "About", LastModified = DateTime.UtcNow });
+
+        return settings;
+    }
 
     public static List<ContactSubmission> GetContactSubmissions() => new();
 }
